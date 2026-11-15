@@ -51,13 +51,13 @@
   </nav>
 
   <div class="ml-auto flex h-full items-center">
-    <button type="button" aria-label="Search" class="no-drag mr-2 flex size-8 items-center justify-center rounded-full text-paper-2 hover:bg-ink-3 hover:text-paper" onclick={() => (ui.searching = true)}>
+    <button type="button" aria-label="Search" class="no-drag flex h-full w-[46px] items-center justify-center text-paper-2 transition-colors duration-150 hover:bg-ink-3 hover:text-paper" onclick={() => (ui.searching = true)}>
       <Icon name="search" size={17} />
     </button>
     <div class="window-controls flex h-full" aria-hidden="true">
       {#each [["minimize", "minimize"], ["maximize", maximized ? "restore" : "maximize"], ["close", "close"]] as [kind, icon] (kind)}
-        <span class="flex h-full w-[46px] items-center justify-center text-paper-3 transition-colors {kind === 'close' ? 'hover:bg-[#c42b1c] hover:text-white' : 'hover:bg-ink-3 hover:text-paper'}">
-          <Icon name={icon as "minimize"} size={15} />
+        <span class="flex h-full w-[46px] items-center justify-center text-paper-2 transition-colors duration-150 {kind === 'close' ? 'hover:bg-[#c42b1c] hover:text-white' : 'hover:bg-ink-3 hover:text-paper'}">
+          <Icon name={icon as "minimize"} size={17} />
         </span>
       {/each}
     </div>

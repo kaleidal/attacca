@@ -8,26 +8,30 @@
   import Cover from "../media/Cover.svelte";
   import Icon from "../ui/Icon.svelte";
 
-  let now = $state(0);
+  let bar = $state<HTMLDivElement>();
+
+  const song = $derived(player.song);
+
+  /** Moves the progress line with a transform each frame, so nothing is laid out or repainted. */
   $effect(() => {
+    const line = bar;
+    const duration = song?.duration;
+    if (!line || !duration) return;
     let frame = 0;
     const tick = () => {
-      now = player.seconds();
+      line.style.transform = `scaleX(${Math.min(1, player.seconds() / duration)})`;
       frame = requestAnimationFrame(tick);
     };
     tick();
     return () => cancelAnimationFrame(frame);
   });
-
-  const song = $derived(player.song);
-  const progress = $derived(song ? Math.min(1, now / song.duration) : 0);
   const cue = $derived(song && player.state.upcoming ? player.state.upcoming.cue / song.duration : null);
 </script>
 
 {#if song}
   <div
     transition:fly={{ y: 20, duration: motion(260), easing: cubicOut }}
-    class="fixed bottom-5 left-1/2 z-40 flex h-[60px] w-[min(640px,calc(100%-48px))] -translate-x-1/2 items-center gap-3 overflow-hidden rounded-[20px] bg-ink-3/95 pr-2 pl-2 shadow-[0_18px_50px_rgb(0_0_0/0.55)] backdrop-blur-md"
+    class="fixed bottom-5 left-1/2 z-40 flex h-[60px] w-[min(640px,calc(100%-48px))] -translate-x-1/2 items-center gap-3 overflow-hidden rounded-[20px] bg-ink-3 pr-2 pl-2 shadow-[0_18px_50px_rgb(0_0_0/0.55)] [will-change:transform]"
   >
     <button type="button" class="group flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left" onclick={() => ui.go({ view: "listen" })}>
       {#key song.id}
@@ -53,7 +57,7 @@
       <Icon name="queue" size={17} />
     </button>
     <div class="absolute inset-x-5 bottom-0 h-[2px] bg-ink-5" aria-hidden="true">
-      <div class="h-full bg-accent" style="width:{progress * 100}%"></div>
+      <div bind:this={bar} class="h-full origin-left bg-accent [will-change:transform]" style="transform:scaleX(0)"></div>
       {#if cue !== null}<div class="absolute -top-[3px] h-2 w-[2px] rounded-full bg-paper-2" style="left:{cue * 100}%"></div>{/if}
     </div>
   </div>

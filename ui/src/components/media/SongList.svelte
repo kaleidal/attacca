@@ -31,25 +31,33 @@
   let viewport = $state(800);
   let selected = $state<string | null>(null);
 
+  /** Scrolling only reads the scroll offset; the list's place is measured when sizes change. */
   $effect(() => {
-    if (!scroller) return;
-    const update = () => {
-      const offset = list.getBoundingClientRect().top - scroller!.getBoundingClientRect().top + scroller!.scrollTop;
-      top = scroller!.scrollTop - offset;
-      viewport = scroller!.clientHeight;
+    const area = scroller;
+    if (!area) return;
+    let offset = 0;
+    const scrolled = () => {
+      const row = Math.floor((area.scrollTop - offset) / ROW);
+      if (row !== top) top = row;
     };
-    update();
-    scroller.addEventListener("scroll", update, { passive: true });
-    const observer = new ResizeObserver(update);
-    observer.observe(scroller);
+    const measure = () => {
+      offset = list.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop;
+      viewport = area.clientHeight;
+      scrolled();
+    };
+    measure();
+    area.addEventListener("scroll", scrolled, { passive: true });
+    const observer = new ResizeObserver(measure);
+    observer.observe(area);
+    observer.observe(list);
     return () => {
-      scroller!.removeEventListener("scroll", update);
+      area.removeEventListener("scroll", scrolled);
       observer.disconnect();
     };
   });
 
-  const first = $derived(Math.max(0, Math.floor(top / ROW) - OVERSCAN));
-  const last = $derived(Math.min(songs.length, Math.ceil((top + viewport) / ROW) + OVERSCAN));
+  const first = $derived(Math.max(0, top - OVERSCAN));
+  const last = $derived(Math.min(songs.length, top + Math.ceil(viewport / ROW) + OVERSCAN));
   const visible = $derived(songs.slice(first, last));
 
   function play(index: number) {
