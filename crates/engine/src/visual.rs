@@ -107,7 +107,7 @@ impl Analyser {
                 .iter()
                 .map(|bin| bin.norm_sqr())
                 .fold(0.0, f32::max);
-            let db = 10.0 * (power.max(1e-12) / (SIZE as f32 * 0.25)).log10();
+            let db = 10.0 * (power.max(1e-12) / (SIZE as f32 * 0.25).powi(2)).log10();
             let level = ((db - FLOOR_DB) / -FLOOR_DB).clamp(0.0, 1.0);
             let previous = self.levels[band];
             self.levels[band] = if level > previous {

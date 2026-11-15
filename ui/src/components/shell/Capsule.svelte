@@ -29,12 +29,12 @@
     transition:fly={{ y: 20, duration: motion(260), easing: cubicOut }}
     class="fixed bottom-5 left-1/2 z-40 flex h-[60px] w-[min(640px,calc(100%-48px))] -translate-x-1/2 items-center gap-3 overflow-hidden rounded-[20px] bg-ink-3/95 pr-2 pl-2 shadow-[0_18px_50px_rgb(0_0_0/0.55)] backdrop-blur-md"
   >
-    <button type="button" class="flex min-w-0 flex-1 items-center gap-3 text-left" onclick={() => ui.go({ view: "listen" })}>
+    <button type="button" class="group flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left" onclick={() => ui.go({ view: "listen" })}>
       {#key song.id}
-      <div in:scale={{ start: 0.85, duration: motion(260), easing: cubicOut }}><Cover cover={song.cover} label={title(song)} size={44} class="rounded-xl!" /></div>
+      <div in:scale={{ start: 0.85, duration: motion(260), easing: cubicOut }} class="transition-transform duration-200 group-hover:scale-105"><Cover cover={song.cover} label={title(song)} size={44} class="rounded-xl!" /></div>
       {/key}
       <div class="min-w-0">
-        <div class="truncate text-[14px] font-medium">{title(song)}</div>
+        <div class="truncate text-[14px] font-medium transition-colors group-hover:text-accent">{title(song)}</div>
         <div class="truncate text-[12px] text-paper-3">{artist(song)}</div>
       </div>
     </button>

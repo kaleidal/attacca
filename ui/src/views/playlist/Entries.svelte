@@ -70,7 +70,12 @@
       </div>
       {#if song}
         <div class="flex min-w-0 items-center gap-3">
-          <Cover cover={song.cover} label={title(song)} size={36} />
+          <button type="button" aria-label="Play {title(song)}" class="relative shrink-0" onclick={() => onplay(song)}>
+            <Cover cover={song.cover} label={title(song)} size={36} />
+            <span class="absolute inset-0 flex items-center justify-center rounded-(--radius-cover) bg-[rgb(14_13_12/0.6)] text-paper opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+              <Icon name="play" size={14} />
+            </span>
+          </button>
           <div class="min-w-0">
             <div class="truncate text-[14px] {player.song?.id === song.id ? 'text-accent' : ''}">{title(song)}</div>
             <div class="truncate text-[13px] text-paper-3">{artist(song)}</div>

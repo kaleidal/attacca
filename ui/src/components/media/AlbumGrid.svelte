@@ -27,7 +27,7 @@
       onkeydown={(event) => event.key === "Enter" && ui.go({ view: "album", key: album.key })}
     >
       <div class="relative">
-        <Cover cover={album.cover} label={album.title} size="fill" large class="transition-transform duration-300 ease-out-soft group-hover:-translate-y-0.5" />
+        <Cover cover={album.cover} label={album.title} size="fill" large class="rounded-2xl! transition duration-300 ease-out-soft group-hover:-translate-y-1 group-hover:shadow-[0_18px_44px_rgb(0_0_0/0.5)] group-active:scale-[0.98]" />
         <button
           type="button"
           aria-label="Play {album.title}"

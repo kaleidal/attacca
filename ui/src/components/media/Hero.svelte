@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import Icon from "../ui/Icon.svelte";
   import Cover from "./Cover.svelte";
 
   let { cover, label, round = false, oncover, subtitle, meta, actions, title }: {
@@ -16,8 +17,12 @@
 
 <header class="flex flex-col items-center pt-6 pb-9 text-center">
   {#if oncover}
-    <button type="button" aria-label="Change cover" class="group relative" onclick={oncover}>
-      <Cover {cover} {label} size={220} large class="{round ? 'rounded-full!' : 'rounded-2xl!'} shadow-[0_28px_70px_rgb(0_0_0/0.55)] transition-transform duration-300 ease-out-soft group-hover:-translate-y-1" />
+    <button type="button" aria-label="Change cover" class="group relative transition-transform duration-300 ease-out-soft hover:-translate-y-1 active:scale-[0.98]" onclick={oncover}>
+      <Cover {cover} {label} size={220} large class="{round ? 'rounded-full!' : 'rounded-2xl!'} shadow-[0_28px_70px_rgb(0_0_0/0.55)]" />
+      <span class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[rgb(14_13_12/0.55)] text-[13px] text-paper opacity-0 transition-opacity duration-200 group-hover:opacity-100 {round ? 'rounded-full' : 'rounded-2xl'}">
+        <Icon name="image" size={24} />
+        Change cover
+      </span>
     </button>
   {:else}
     <Cover {cover} {label} size={220} large class="{round ? 'rounded-full!' : 'rounded-2xl!'} shadow-[0_28px_70px_rgb(0_0_0/0.55)]" />

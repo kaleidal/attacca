@@ -26,6 +26,22 @@
     localStorage.setItem("attacca.visualizer", style);
   });
 
+  const IDLE_AFTER = 2600;
+  let idle = $state(false);
+  let resting: ReturnType<typeof setTimeout> | undefined;
+
+  /** Shows the controls on movement and hides them again once the pointer rests. */
+  function wake() {
+    idle = false;
+    clearTimeout(resting);
+    resting = setTimeout(() => (idle = true), IDLE_AFTER);
+  }
+
+  $effect(() => {
+    wake();
+    return () => clearTimeout(resting);
+  });
+
   $effect(() => {
     const url = coverUrl(player.song?.cover, true);
     if (!url) return;
@@ -132,31 +148,44 @@
 
 <svelte:window onkeydown={(event) => event.key === "Escape" && (ui.visualizer = false)} />
 
-<div transition:appear={{ duration: motion(220), easing: cubicOut }} class="fixed inset-0 z-40 bg-ink">
+<div
+  transition:appear={{ duration: motion(220), easing: cubicOut }}
+  role="presentation"
+  class="fixed inset-0 z-40 bg-ink {idle ? 'cursor-none' : ''}"
+  onpointermove={wake}
+  onpointerdown={wake}
+>
   <canvas bind:this={canvas} class="absolute inset-0 size-full {style === 'cover' ? 'blur-2xl' : ''}"></canvas>
   {#if still}
     <div class="absolute inset-0 flex items-center justify-center text-[14px] text-paper-3">The visualizer rests while reduced motion is on.</div>
   {/if}
-  <div class="drag absolute inset-x-0 top-0 flex h-12 items-center justify-end pr-[150px]">
-    <button type="button" aria-label="Close visualizer" class="no-drag flex size-9 items-center justify-center rounded-lg text-paper-2 hover:bg-ink-3 hover:text-paper" onclick={() => (ui.visualizer = false)}>
-      <Icon name="close" size={18} />
-    </button>
-  </div>
-  <div class="absolute inset-x-10 bottom-9 flex items-end justify-between">
+  <div class="drag absolute inset-x-0 top-0 h-12"></div>
+  <div class="absolute inset-x-10 bottom-9 flex items-end justify-between transition-opacity duration-500 {idle ? 'opacity-0' : 'opacity-100'}">
     {#if player.song}
       <div class="min-w-0">
         <div class="display truncate text-[28px] font-semibold">{title(player.song)}</div>
         <div class="truncate text-[15px] text-paper-2">{artist(player.song)}</div>
       </div>
     {/if}
-    <Segmented
-      bind:value={style}
-      label="Visualizer style"
-      options={[
-        { value: "bars", label: "Spectrum" },
-        { value: "wave", label: "Waveform" },
-        { value: "cover", label: "Cover" },
-      ]}
-    />
+    <div class="flex items-center gap-2">
+      <Segmented
+        bind:value={style}
+        label="Visualizer style"
+        options={[
+          { value: "bars", label: "Spectrum" },
+          { value: "wave", label: "Waveform" },
+          { value: "cover", label: "Cover" },
+        ]}
+      />
+      <button
+        type="button"
+        aria-label="Close visualizer"
+        title="Close"
+        class="flex size-[38px] items-center justify-center rounded-lg bg-ink-3 text-paper-2 transition duration-150 hover:bg-ink-4 hover:text-paper active:scale-95"
+        onclick={() => (ui.visualizer = false)}
+      >
+        <Icon name="close" size={16} />
+      </button>
+    </div>
   </div>
 </div>
