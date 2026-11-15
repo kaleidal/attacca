@@ -1,0 +1,26 @@
+{
+  "name": "attacca-ui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "svelte-check --tsgo --tsconfig ./tsconfig.json && vite build",
+    "check": "svelte-check --tsgo --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/martian-mono": "^5.3.0",
+    "@lantharos/sabine": "github:Lantharos/Sabine#v0.90"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@tsconfig/svelte": "^5.0.9",
+    "@typescript/native": "npm:typescript@7",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "tailwindcss": "^4.3.5",
+    "typescript": "~6",
+    "vite": "^8.3.8"
+  }
+}

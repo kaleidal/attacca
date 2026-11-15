@@ -1,0 +1,16 @@
+[package]
+name = "attacca"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sabine = { git = "https://github.com/Lantharos/Sabine", tag = "v0.90", package = "sabine" }
+attacca-engine.workspace = true
+attacca-library.workspace = true
+mpris-server.workspace = true
+ashpd.workspace = true
+parking_lot.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+specta.workspace = true

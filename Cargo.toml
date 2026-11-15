@@ -1,0 +1,44 @@
+[workspace]
+resolver = "3"
+members = ["app", "crates/media", "crates/engine", "crates/analysis", "crates/library"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+attacca-media = { path = "crates/media" }
+attacca-engine = { path = "crates/engine" }
+attacca-analysis = { path = "crates/analysis" }
+attacca-library = { path = "crates/library" }
+symphonia = { version = "0.6.1", features = ["all"] }
+symphonia-opus = "0.1.3"
+lofty = "0.25.5"
+rusqlite = { version = "0.43.0", features = ["bundled"] }
+pipewire = "0.10.1"
+rtrb = "0.4.1"
+rubato = "5.1.0"
+ebur128 = "0.1.11"
+realfft = "3.5.1"
+notify = "9.0.0-rc.9"
+mpris-server = { version = "0.11.0", features = ["tokio"] }
+ashpd = { version = "0.14.0", default-features = false, features = ["tokio", "file_chooser"] }
+blake3 = "1.8.7"
+rusty-chromaprint = "0.3.0"
+crossbeam-channel = "0.5.17"
+parking_lot = "0.13.0"
+tokio = "1.54.1"
+base64 = "0.23.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+image = { version = "0.25.10", default-features = false, features = ["jpeg", "png", "webp", "gif", "bmp"] }
+specta = { version = "=2.0.0-rc.27", features = ["derive"] }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true
+
+[profile.dev.package."*"]
+opt-level = 3
