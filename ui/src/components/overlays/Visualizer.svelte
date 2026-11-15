@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { cubicOut } from "svelte/easing";
+  import { motion } from "../../lib/motion";
   import { fade as appear } from "svelte/transition";
   import { artist, title } from "../../lib/format";
   import { coverUrl } from "../../lib/media";
@@ -130,7 +132,7 @@
 
 <svelte:window onkeydown={(event) => event.key === "Escape" && (ui.visualizer = false)} />
 
-<div transition:appear={{ duration: 220 }} class="fixed inset-0 z-40 bg-ink">
+<div transition:appear={{ duration: motion(220), easing: cubicOut }} class="fixed inset-0 z-40 bg-ink">
   <canvas bind:this={canvas} class="absolute inset-0 size-full {style === 'cover' ? 'blur-2xl' : ''}"></canvas>
   {#if still}
     <div class="absolute inset-0 flex items-center justify-center text-[14px] text-paper-3">The visualizer rests while reduced motion is on.</div>

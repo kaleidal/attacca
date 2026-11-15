@@ -392,10 +392,7 @@ impl Library {
                     written.push(PathBuf::from(path));
                 }
                 db.set_kept_cover(&format!("song:{song}"), None)?;
-                db.connection().execute(
-                    "UPDATE songs SET cover = ?2 WHERE id = ?1",
-                    rusqlite::params![song, name],
-                )?;
+                db.set_song_cover(song, &name)?;
             } else {
                 db.set_kept_cover(&format!("song:{song}"), Some(&name))?;
             }

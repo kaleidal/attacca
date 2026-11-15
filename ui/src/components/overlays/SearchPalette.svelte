@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
+  import { motion } from "../../lib/motion";
+  import { fade, fly } from "svelte/transition";
   import { artist, matches, title } from "../../lib/format";
   import { library } from "../../lib/stores/library.svelte";
   import { player } from "../../lib/stores/player.svelte";
@@ -94,8 +96,8 @@
   }
 </script>
 
-<div role="presentation" class="fixed inset-0 z-50 bg-[rgb(8_7_6/0.6)] backdrop-blur-[3px]" onpointerdown={(event) => event.target === event.currentTarget && (ui.searching = false)}>
-  <div transition:fly={{ y: -10, duration: 180 }} class="mx-auto mt-[13vh] w-[min(640px,calc(100%-48px))] overflow-hidden rounded-3xl bg-ink-3 shadow-[0_30px_90px_rgb(0_0_0/0.65)]">
+<div role="presentation" transition:fade={{ duration: motion(140) }} class="fixed inset-0 z-50 bg-[rgb(8_7_6/0.6)] backdrop-blur-[3px]" onpointerdown={(event) => event.target === event.currentTarget && (ui.searching = false)}>
+  <div transition:fly={{ y: -10, duration: motion(180), easing: cubicOut }} class="mx-auto mt-[13vh] w-[min(640px,calc(100%-48px))] overflow-hidden rounded-3xl bg-ink-3 shadow-[0_30px_90px_rgb(0_0_0/0.65)]">
     <div class="flex h-16 items-center gap-3 px-5">
       <Icon name="search" size={20} class="text-paper-3" />
       <input

@@ -1,5 +1,8 @@
 <script lang="ts">
   import { appWindow } from "@lantharos/sabine";
+  import { cubicOut } from "svelte/easing";
+  import { fly } from "svelte/transition";
+  import { motion } from "./lib/motion";
   import { accentFrom } from "./lib/accent";
   import { events } from "./lib/bindings";
   import { coverUrl } from "./lib/media";
@@ -98,6 +101,7 @@
   <TitleBar />
   <main class="relative min-h-0 flex-1 overflow-hidden">
     {#key JSON.stringify(ui.route)}
+      <div class="h-full" in:fly={{ y: 10, duration: motion(240), easing: cubicOut }}>
       {#if ui.route.view === "listen"}<Listen />
       {:else if ui.route.view === "songs"}<Songs />
       {:else if ui.route.view === "recent"}<Songs recent />
@@ -110,6 +114,7 @@
       {:else if ui.route.view === "sound"}<Sound />
       {:else if ui.route.view === "edit"}<SongEditor song={ui.route.song} next={ui.route.next} context={ui.route.context} />
       {/if}
+      </div>
     {/key}
   </main>
 </div>

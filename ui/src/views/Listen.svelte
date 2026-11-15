@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { cubicOut } from "svelte/easing";
+  import { fly, scale } from "svelte/transition";
   import { artist, clock, title } from "../lib/format";
+  import { motion } from "../lib/motion";
   import { library } from "../lib/stores/library.svelte";
   import { player } from "../lib/stores/player.svelte";
   import { ui } from "../lib/stores/ui.svelte";
@@ -65,16 +68,20 @@
 {:else}
   <div class="flex h-full flex-col items-center px-12 pb-8">
     <div class="flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-7">
-      <div class="aspect-square h-[min(40vh,400px)] min-h-32">
+      {#key song.id}
+      <div class="aspect-square h-[min(40vh,400px)] min-h-32" in:scale={{ start: 0.94, duration: motion(420), easing: cubicOut }}>
         <Cover cover={song.cover} label={title(song)} size="fill" large class="rounded-2xl! shadow-[0_32px_90px_rgb(0_0_0/0.6)]" />
       </div>
-      <div class="flex max-w-[min(760px,90%)] flex-col items-center text-center">
+      {/key}
+      {#key song.id}
+      <div class="flex max-w-[min(760px,90%)] flex-col items-center text-center" in:fly={{ y: 8, duration: motion(360), delay: motion(60), easing: cubicOut }}>
         <h1 class="display w-full truncate text-[clamp(30px,3.6vw,48px)] leading-[1.05] font-semibold">{title(song)}</h1>
         <p class="mt-2 truncate text-[16px] text-paper-2">
           <button type="button" class="hover:text-paper" onclick={() => ui.go({ view: "artist", name: artist(song) })}>{artist(song)}</button>
           {#if song.album}<span class="text-paper-4"> · </span><span class="text-paper-3">{song.album}</span>{/if}
         </p>
       </div>
+      {/key}
       <div class="grid w-full max-w-[560px] grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div class="flex items-center justify-end gap-1">
           <button type="button" aria-label="Edit song" title="Edit song" class="flex size-10 items-center justify-center rounded-full text-paper-3 hover:bg-ink-3 hover:text-paper" onclick={edit}>
@@ -87,7 +94,7 @@
             <Icon name="previous" size={22} />
           </button>
         </div>
-        <button type="button" aria-label={player.state.playing ? "Pause" : "Play"} class="flex size-16 items-center justify-center rounded-full bg-paper text-ink shadow-[0_10px_30px_rgb(0_0_0/0.4)] transition-transform active:scale-95" onclick={() => player.toggle()}>
+        <button type="button" aria-label={player.state.playing ? "Pause" : "Play"} class="flex size-16 items-center justify-center rounded-full bg-paper text-ink shadow-[0_10px_30px_rgb(0_0_0/0.4)] transition-transform duration-150 hover:scale-105 active:scale-95" onclick={() => player.toggle()}>
           <Icon name={player.state.playing ? "pause" : "play"} size={26} />
         </button>
         <div class="flex items-center gap-1">

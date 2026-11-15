@@ -4,6 +4,9 @@
   import { player } from "../../lib/stores/player.svelte";
   import Cover from "./Cover.svelte";
   import Icon from "../ui/Icon.svelte";
+  import { fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
+  import { motion } from "../../lib/motion";
 
   let { albums }: { albums: Album[] } = $props();
 
@@ -14,8 +17,9 @@
 </script>
 
 <div class="grid grid-cols-[repeat(auto-fit,176px)] justify-center gap-x-6 gap-y-8">
-  {#each albums as album (album.key)}
+  {#each albums as album, index (album.key)}
     <div
+      in:fly={{ y: 14, duration: motion(320), delay: motion(Math.min(index, 18) * 22), easing: cubicOut }}
       role="button"
       tabindex="0"
       class="group flex min-w-0 flex-col gap-2.5 text-left"
@@ -27,7 +31,7 @@
         <button
           type="button"
           aria-label="Play {album.title}"
-          class="absolute right-2.5 bottom-2.5 flex size-10 items-center justify-center rounded-full bg-accent text-on-accent opacity-0 shadow-[0_6px_20px_rgb(0_0_0/0.45)] transition group-hover:opacity-100"
+          class="absolute right-2.5 bottom-2.5 flex size-10 translate-y-1 items-center justify-center rounded-full bg-accent text-on-accent opacity-0 shadow-[0_6px_20px_rgb(0_0_0/0.45)] transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 active:scale-90"
           onclick={(event) => play(album, event)}
         >
           <Icon name="play" size={18} />

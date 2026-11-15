@@ -11,7 +11,6 @@
   import Button from "../../components/ui/Button.svelte";
   import Popover from "../../components/ui/Popover.svelte";
   import Entries from "./Entries.svelte";
-  import TransitionStrip from "./TransitionStrip.svelte";
 
   let { id }: { id: number } = $props();
   let playlist = $state<Playlist | null>(null);
@@ -70,7 +69,7 @@
 
 {#if playlist}
   <div class="scroll h-full px-10 pb-32">
-    <Hero cover={playlist.cover ?? songs[0]?.cover} label={playlist.name} oncover={() => (ui.coverTarget = { type: "playlist", id })} meta="{count(songs.length, 'song', 'songs')} · {length(total)}{missing ? ` · ${missing} not in your library yet` : ''}">
+    <Hero cover={playlist.cover ?? songs.find((song) => song.cover)?.cover} label={playlist.name} oncover={() => (ui.coverTarget = { type: "playlist", id })} meta="{count(songs.length, 'song', 'songs')} · {length(total)}{missing ? ` · ${missing} not in your library yet` : ''}">
       {#snippet title()}
         {#if naming}
           <!-- svelte-ignore a11y_autofocus -->
@@ -93,12 +92,13 @@
         <Popover width={340}>
           {#snippet trigger(toggle)}
             <Button onclick={toggle}>
+              <span class="text-paper-3">Default</span>
               <TransitionGlyph kind={fallback.kind} width={30} />
               {info(fallback.kind).label}{fallback.kind !== "none" ? ` · ${fallback.seconds.toFixed(fallback.seconds < 2 ? 1 : 0)} s` : ""}
             </Button>
           {/snippet}
           {#snippet children()}
-            <div class="mb-3 text-[13px] text-paper-2">Between songs in this playlist</div>
+            <div class="mb-3 text-[13px] text-paper-2">Between songs that have no transition of their own</div>
             <TransitionPicker value={playlist!.transition} fallback={{ label: "Fade, as always", transition: fade }} onchange={setDefault} />
           {/snippet}
         </Popover>
@@ -116,12 +116,8 @@
       {/snippet}
     </Hero>
 
-    {#if songs.length > 1}
-      <TransitionStrip {playlist} {songs} {fallback} />
-    {/if}
-
     <div class="mx-auto max-w-[880px]">
-      <Entries {playlist} {context} {songAfter} onplay={(song) => play(songs.findIndex((entry) => entry.id === song.id))} />
+      <Entries {playlist} {context} {fallback} {songAfter} onplay={(song) => play(songs.findIndex((entry) => entry.id === song.id))} />
     </div>
   </div>
 {/if}

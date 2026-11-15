@@ -110,6 +110,24 @@ impl Db {
             .optional()
     }
 
+    pub fn coverless_song_at(&self, path: &str) -> DbResult<Option<String>> {
+        self.connection
+            .query_row(
+                "SELECT s.id FROM files f JOIN songs s ON s.id = f.song WHERE f.path = ?1 AND s.cover IS NULL",
+                [path],
+                |row| row.get(0),
+            )
+            .optional()
+    }
+
+    pub fn set_song_cover(&self, song: &str, cover: &str) -> DbResult<()> {
+        self.connection.execute(
+            "UPDATE songs SET cover = ?2 WHERE id = ?1",
+            params![song, cover],
+        )?;
+        Ok(())
+    }
+
     pub fn song_at(&self, path: &str) -> DbResult<Option<String>> {
         self.connection
             .query_row("SELECT song FROM files WHERE path = ?1", [path], |row| {

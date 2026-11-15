@@ -70,7 +70,7 @@
       role="option"
       tabindex="-1"
       aria-selected={selected === song.id}
-      class="group absolute inset-x-0 grid items-center gap-4 rounded-lg px-3 {showAlbum ? 'grid-cols-[28px_minmax(0,2.2fr)_minmax(0,1.4fr)_64px_56px]' : 'grid-cols-[28px_minmax(0,1fr)_64px_56px]'} {selected === song.id ? 'bg-ink-3' : 'hover:bg-ink-2'}"
+      class="group absolute inset-x-0 grid items-center gap-4 rounded-xl px-3 transition-colors duration-150 {showAlbum ? 'grid-cols-[28px_minmax(0,2.2fr)_minmax(0,1.4fr)_64px_56px]' : 'grid-cols-[28px_minmax(0,1fr)_64px_56px]'} {selected === song.id ? 'bg-ink-3' : 'hover:bg-ink-2'}"
       style="top:{index * ROW}px;height:{ROW}px"
       onclick={() => (selected = song.id)}
       ondblclick={() => play(index)}

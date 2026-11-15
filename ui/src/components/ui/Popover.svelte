@@ -1,5 +1,8 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
+  import { motion } from "../../lib/motion";
 
   const GAP = 8;
   const MARGIN = 12;
@@ -58,6 +61,7 @@
 {#if open}
   <div
     bind:this={panel}
+    transition:scale={{ start: 0.96, duration: motion(140), easing: cubicOut }}
     class="fixed z-40 rounded-2xl bg-ink-4 p-4 shadow-[0_18px_56px_rgb(0_0_0/0.6)]"
     style="left:{place.left}px;top:{place.top}px;width:{width}px"
   >

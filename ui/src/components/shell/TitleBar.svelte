@@ -1,5 +1,6 @@
 <script lang="ts">
   import { appWindow } from "@lantharos/sabine";
+  import { Indicator } from "../../lib/indicator.svelte";
   import { library } from "../../lib/stores/library.svelte";
   import { ui, type Route, type Section } from "../../lib/stores/ui.svelte";
   import Icon from "../ui/Icon.svelte";
@@ -14,6 +15,7 @@
     { section: "sound", label: "Sound", route: { view: "sound" } },
   ];
 
+  const indicator = new Indicator(() => sections.findIndex((entry) => entry.section === ui.section));
   const deep = $derived(["album", "artist", "playlist", "edit"].includes(ui.route.view));
 </script>
 
@@ -30,11 +32,17 @@
   </div>
 
   <nav aria-label="Sections" class="no-drag absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-full bg-ink-2 p-1">
-    {#each sections as entry (entry.section)}
+    <span
+      class="absolute top-1 bottom-1 rounded-full bg-ink-4 {indicator.ready ? 'transition-[left,width] duration-300 ease-out-soft' : ''}"
+      style="left:{indicator.left}px;width:{indicator.width}px"
+      aria-hidden="true"
+    ></span>
+    {#each sections as entry, index (entry.section)}
       <button
+        bind:this={indicator.items[index]}
         type="button"
         aria-current={ui.section === entry.section ? "page" : undefined}
-        class="rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors {ui.section === entry.section ? 'bg-ink-4 text-paper' : 'text-paper-3 hover:text-paper-2'}"
+        class="relative rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors duration-200 active:scale-95 {ui.section === entry.section ? 'text-paper' : 'text-paper-3 hover:text-paper-2'}"
         onclick={() => ui.go(entry.route)}
       >
         {entry.label}

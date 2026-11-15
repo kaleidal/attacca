@@ -1,4 +1,7 @@
 <script lang="ts" generics="T">
+  import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
+  import { motion } from "../../lib/motion";
   import Icon from "./Icon.svelte";
 
   let { value = $bindable(), options, label, onchange, class: className = "" }: {
@@ -36,10 +39,10 @@
     onclick={() => (open = !open)}
   >
     <span class="truncate">{current}</span>
-    <Icon name="forward" size={14} class="rotate-90 text-paper-3" />
+    <Icon name="forward" size={14} class="text-paper-3 transition-transform duration-200 {open ? '-rotate-90' : 'rotate-90'}" />
   </button>
   {#if open}
-    <div role="listbox" class="scroll absolute top-full right-0 left-0 z-40 mt-1 max-h-64 rounded-lg bg-ink-4 p-1 shadow-[0_12px_40px_rgb(0_0_0/0.55)]">
+    <div role="listbox" transition:scale={{ start: 0.96, duration: motion(130), easing: cubicOut }} class="origin-top scroll absolute top-full right-0 left-0 z-40 mt-1 max-h-64 rounded-lg bg-ink-4 p-1 shadow-[0_12px_40px_rgb(0_0_0/0.55)]">
       {#each options as option, index (index)}
         <button
           type="button"

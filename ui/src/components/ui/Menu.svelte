@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
+  import { motion } from "../../lib/motion";
   import { ui } from "../../lib/stores/ui.svelte";
 
   let element = $state<HTMLDivElement>();
@@ -26,6 +29,7 @@
   <div
     bind:this={element}
     role="menu"
+    transition:scale={{ start: 0.95, duration: motion(120), easing: cubicOut }}
     class="fixed z-50 min-w-48 rounded-xl bg-ink-4 p-1.5 shadow-[0_16px_48px_rgb(0_0_0/0.6)]"
     style="left:{place.x}px;top:{place.y}px"
   >
@@ -33,7 +37,7 @@
       <button
         type="button"
         role="menuitem"
-        class="block w-full rounded-lg px-3 py-1.5 text-left text-[13px] hover:bg-ink-5 {item.danger ? 'text-[#ff8a75]' : 'text-paper'}"
+        class="block w-full rounded-lg px-3 py-1.5 text-left text-[13px] transition-colors duration-100 hover:bg-ink-5 {item.danger ? 'text-[#ff8a75]' : 'text-paper'}"
         onclick={() => {
           close();
           item.action();

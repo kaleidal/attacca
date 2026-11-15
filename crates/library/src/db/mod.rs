@@ -117,10 +117,6 @@ impl Db {
         connection.execute_batch(SCHEMA)?;
         Ok(Self { connection })
     }
-
-    pub fn connection(&self) -> &Connection {
-        &self.connection
-    }
 }
 
 pub fn now() -> i64 {

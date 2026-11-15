@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { cubicOut } from "svelte/easing";
+  import { motion } from "../../lib/motion";
   import { fly } from "svelte/transition";
   import { commands } from "../../lib/bindings";
   import { artist, clock, title } from "../../lib/format";
@@ -23,7 +25,7 @@
 </script>
 
 <div role="presentation" class="fixed inset-0 z-30" onpointerdown={() => (ui.queueOpen = false)}></div>
-<aside transition:fly={{ y: 24, duration: 220 }} class="fixed bottom-[92px] left-1/2 z-40 flex max-h-[min(560px,70vh)] w-[min(520px,calc(100%-48px))] -translate-x-1/2 flex-col rounded-3xl bg-ink-3 shadow-[0_24px_70px_rgb(0_0_0/0.6)]">
+<aside transition:fly={{ y: 24, duration: motion(220), easing: cubicOut }} class="fixed bottom-[92px] left-1/2 z-40 flex max-h-[min(560px,70vh)] w-[min(520px,calc(100%-48px))] -translate-x-1/2 flex-col rounded-3xl bg-ink-3 shadow-[0_24px_70px_rgb(0_0_0/0.6)]">
   <div class="flex items-center justify-between px-5 pt-5 pb-3">
     <h2 class="display text-lg font-semibold">Up next</h2>
     <div class="flex items-center gap-1">

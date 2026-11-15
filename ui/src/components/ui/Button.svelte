@@ -33,7 +33,7 @@
   {disabled}
   aria-label={label}
   title={children ? undefined : label}
-  class="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg text-[13px] font-medium transition disabled:pointer-events-none disabled:opacity-40 {children ? 'px-3.5' : 'w-9'} {kinds[kind]} {className}"
+  class="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg text-[13px] font-medium transition duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 {children ? 'px-3.5' : 'w-9'} {kinds[kind]} {className}"
   {onclick}
 >
   {#if icon}<Icon name={icon} size={18} />{/if}

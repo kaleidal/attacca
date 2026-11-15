@@ -114,6 +114,16 @@ textarea:focus-visible {
   scrollbar-width: none;
 }
 
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+}
+
+.appear {
+  animation: appear 0.35s var(--ease-out-soft);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

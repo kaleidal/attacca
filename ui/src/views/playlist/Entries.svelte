@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { commands, type Context, type Playlist, type Song } from "../../lib/bindings";
+  import { fly } from "svelte/transition";
+  import { commands, type Context, type Playlist, type Song, type Transition } from "../../lib/bindings";
   import { songMenu } from "../../lib/actions";
   import { artist, clock, title } from "../../lib/format";
   import { library } from "../../lib/stores/library.svelte";
@@ -7,10 +8,13 @@
   import { ui } from "../../lib/stores/ui.svelte";
   import Cover from "../../components/media/Cover.svelte";
   import Icon from "../../components/ui/Icon.svelte";
+  import { motion } from "../../lib/motion";
+  import Seam from "./Seam.svelte";
 
-  let { playlist, context, songAfter, onplay }: {
+  let { playlist, context, fallback, songAfter, onplay }: {
     playlist: Playlist;
     context: Context;
+    fallback: Transition;
     songAfter: (song: Song) => Song | null;
     onplay: (song: Song) => void;
   } = $props();
@@ -40,10 +44,13 @@
 <div role="list">
   {#each playlist.entries as entry, index (entry.id)}
     {@const song = entry.song ? library.byId.get(entry.song) : undefined}
+    {@const following = playlist.entries[index + 1]}
+    {@const next = following?.song ? library.byId.get(following.song) : undefined}
     <div
       role="listitem"
       draggable="true"
-      class="group grid h-[52px] grid-cols-[28px_minmax(0,2fr)_minmax(0,1.3fr)_56px] items-center gap-4 rounded-lg px-3 hover:bg-ink-2 {over === index ? 'shadow-[inset_0_2px_0_var(--accent)]' : ''} {dragging === index ? 'opacity-40' : ''}"
+      in:fly={{ y: 8, duration: motion(260), delay: motion(Math.min(index, 14) * 18) }}
+      class="group grid h-[52px] grid-cols-[28px_minmax(0,2fr)_minmax(0,1.3fr)_56px] items-center gap-4 rounded-xl px-3 transition-colors duration-150 hover:bg-ink-2 {over === index ? 'shadow-[inset_0_2px_0_var(--accent)]' : ''} {dragging === index ? 'opacity-40' : ''}"
       ondragstart={() => (dragging = index)}
       ondragover={(event) => (event.preventDefault(), (over = index))}
       ondragend={finish}
@@ -83,6 +90,9 @@
         <div class="numeric text-right text-[12px] text-paper-4">{clock(entry.missing.duration)}</div>
       {/if}
     </div>
+    {#if song && next}
+      <Seam {playlist} from={song} to={next} {fallback} />
+    {/if}
   {:else}
     <p class="py-10 text-center text-[13px] text-paper-4">Add songs from their menu, with a right click.</p>
   {/each}

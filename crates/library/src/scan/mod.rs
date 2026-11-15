@@ -154,6 +154,38 @@ fn forget(inner: &Inner, paths: &[String]) {
     }
 }
 
+const ART_NAMES: &[&str] = &["cover", "folder", "front", "album", "artwork"];
+const ART_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png", "webp"];
+
+/// The album art kept beside a song as a picture file, such as `cover.jpg`.
+fn folder_art(song: &Path) -> Option<Vec<u8>> {
+    let entries = std::fs::read_dir(song.parent()?).ok()?;
+    let art = entries.flatten().map(|entry| entry.path()).find(|path| {
+        let lower = |part: Option<&std::ffi::OsStr>| {
+            part.and_then(|part| part.to_str())
+                .unwrap_or_default()
+                .to_lowercase()
+        };
+        ART_NAMES.contains(&lower(path.file_stem()).as_str())
+            && ART_EXTENSIONS.contains(&lower(path.extension()).as_str())
+    })?;
+    std::fs::read(art).ok()
+}
+
+/// Gives a song that has no cover the art beside it, when there is some.
+fn cover_from_folder(inner: &Inner, key: &str, path: &Path) -> Outcome {
+    let Some(song) = inner.db.lock().coverless_song_at(key).ok().flatten() else {
+        return Outcome::Unchanged;
+    };
+    let Some(cover) = folder_art(path).and_then(|bytes| inner.covers.store(&bytes)) else {
+        return Outcome::Unchanged;
+    };
+    match inner.db.lock().set_song_cover(&song, &cover) {
+        Ok(()) => Outcome::Changed { song, new: false },
+        Err(_) => Outcome::Unchanged,
+    }
+}
+
 pub fn read_file(inner: &Inner, path: &Path) -> Result<Outcome, String> {
     let metadata = std::fs::metadata(path).map_err(|error| error.to_string())?;
     let size = metadata.len() as i64;
@@ -172,14 +204,14 @@ pub fn read_file(inner: &Inner, path: &Path) -> Result<Outcome, String> {
         .as_ref()
         .is_some_and(|known| known.size == size && known.modified == modified)
     {
-        return Ok(Outcome::Unchanged);
+        return Ok(cover_from_folder(inner, &key, path));
     }
     let identity = attacca_media::identify(path).map_err(|error| error.to_string())?;
     let tags = tags::read(path);
-    let cover = tags
-        .cover
-        .as_deref()
-        .and_then(|bytes| inner.covers.store(bytes));
+    let cover = match tags.cover {
+        Some(bytes) => inner.covers.store(&bytes),
+        None => folder_art(path).and_then(|bytes| inner.covers.store(&bytes)),
+    };
     let name = path
         .file_stem()
         .map_or_else(String::new, |stem| stem.to_string_lossy().into_owned());

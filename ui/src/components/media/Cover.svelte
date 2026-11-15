@@ -17,7 +17,7 @@
 
 <div class="relative shrink-0 overflow-hidden rounded-(--radius-cover) bg-ink-4 [container-type:inline-size] {className}" style={dimension}>
   {#if url}
-    <img src={url} alt="" draggable="false" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover" />
+    <img src={url} alt="" draggable="false" loading="lazy" decoding="async" class="appear absolute inset-0 size-full object-cover" />
   {:else}
     <span class="display absolute inset-0 flex items-center justify-center font-semibold text-paper-4" style="font-size:{fontSize}">{letter}</span>
   {/if}
