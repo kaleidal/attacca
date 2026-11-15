@@ -12,17 +12,17 @@
   }
 </script>
 
-<div class="scroll h-full px-8 pb-10">
-  <header class="pt-6 pb-6">
-    <h1 class="display text-[34px] leading-none font-semibold">Playlists</h1>
-    <p class="mt-2 text-[13px] text-paper-3">{count(library.playlists.length, "playlist", "playlists")}</p>
+<div class="scroll h-full px-10 pb-32">
+  <header class="flex flex-col items-center gap-3 pt-7 pb-8">
+    <h1 class="display text-[32px] leading-none font-semibold">Playlists</h1>
+    <p class="text-[13px] text-paper-3">{count(library.playlists.length, "playlist", "playlists")}</p>
   </header>
-  <div class="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-x-5 gap-y-7">
+  <div class="mx-auto grid max-w-[1180px] grid-cols-[repeat(auto-fit,176px)] justify-center gap-x-6 gap-y-8">
     <button type="button" class="group flex flex-col gap-2.5 text-left" onclick={create}>
-      <div class="flex aspect-square w-full items-center justify-center rounded-(--radius-cover) bg-ink-2 text-paper-3 transition-colors group-hover:bg-ink-3 group-hover:text-paper">
+      <div class="flex aspect-square w-full items-center justify-center rounded-2xl bg-ink-2 text-paper-3 transition-colors group-hover:bg-ink-3 group-hover:text-paper">
         <Icon name="plus" size={28} />
       </div>
-      <div class="text-[14px] font-medium text-paper-2">New playlist</div>
+      <div class="text-center text-[14px] font-medium text-paper-2">New playlist</div>
     </button>
     {#each library.playlists as playlist (playlist.id)}
       <button type="button" class="group flex min-w-0 flex-col gap-2.5 text-left" onclick={() => ui.go({ view: "playlist", id: playlist.id })}>

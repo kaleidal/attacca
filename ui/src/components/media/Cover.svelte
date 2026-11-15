@@ -15,7 +15,7 @@
   const fontSize = $derived(size === "fill" ? "clamp(20px, 30cqw, 120px)" : `${Math.round(size * 0.42)}px`);
 </script>
 
-<div class="relative shrink-0 overflow-hidden rounded-(--radius-cover) bg-ink-3 [container-type:inline-size] {className}" style={dimension}>
+<div class="relative shrink-0 overflow-hidden rounded-(--radius-cover) bg-ink-4 [container-type:inline-size] {className}" style={dimension}>
   {#if url}
     <img src={url} alt="" draggable="false" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover" />
   {:else}

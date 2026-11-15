@@ -1,6 +1,7 @@
 import type { Context } from "../bindings";
 
 export type Route =
+  | { view: "listen" }
   | { view: "songs" }
   | { view: "recent" }
   | { view: "albums" }
@@ -10,9 +11,23 @@ export type Route =
   | { view: "playlists" }
   | { view: "playlist"; id: number }
   | { view: "sound" }
-  | { view: "now" }
-  | { view: "edit"; song: string; next: string | null; context: Context }
-  | { view: "search" };
+  | { view: "edit"; song: string; next: string | null; context: Context };
+
+export type Section = "listen" | "library" | "playlists" | "sound";
+
+const sections: Record<Route["view"], Section> = {
+  listen: "listen",
+  edit: "listen",
+  songs: "library",
+  recent: "library",
+  albums: "library",
+  album: "library",
+  artists: "library",
+  artist: "library",
+  playlists: "playlists",
+  playlist: "playlists",
+  sound: "sound",
+};
 
 export type CoverTarget = { type: "song"; id: string } | { type: "album"; key: string } | { type: "playlist"; id: number };
 
@@ -28,10 +43,11 @@ export interface Toast {
 }
 
 class UiStore {
-  route = $state<Route>({ view: "songs" });
+  route = $state<Route>({ view: "listen" });
+  section = $derived(sections[this.route.view]);
   queueOpen = $state(false);
   visualizer = $state(false);
-  search = $state("");
+  searching = $state(false);
   coverTarget = $state<CoverTarget | null>(null);
   importing = $state<string | null>(null);
   menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
@@ -47,7 +63,7 @@ class UiStore {
   }
 
   back() {
-    this.route = this.#history.pop() ?? { view: "songs" };
+    this.route = this.#history.pop() ?? { view: "listen" };
   }
 
   get canGoBack() {

@@ -25,8 +25,8 @@
   }
 </script>
 
-<section class="mb-8" aria-label="Transitions in this playlist">
-  <div class="scroll-x -mx-2 flex items-center px-2 py-3">
+<section class="mb-10 flex justify-center" aria-label="Transitions in this playlist">
+  <div class="scroll-x flex max-w-full items-center rounded-2xl bg-ink-2 px-3 py-3">
     {#each songs as song, index (song.id + index)}
       <div class="shrink-0" title={title(song)}>
         <Cover cover={song.cover} label={title(song)} size={44} />

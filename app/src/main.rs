@@ -57,7 +57,7 @@ fn main() {
             let window = window
                 .app()
                 .title("Attacca")
-                .app_chrome(AppChrome::new(48, 0))
+                .app_chrome(AppChrome::new(56, 0))
                 .size(1240, 800)
                 .min_size(960, 620)
                 .remember_size()

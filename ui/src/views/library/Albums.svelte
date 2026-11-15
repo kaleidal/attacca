@@ -3,16 +3,14 @@
   import { library } from "../../lib/stores/library.svelte";
   import AlbumGrid from "../../components/media/AlbumGrid.svelte";
   import Empty from "./Empty.svelte";
+  import Tabs from "./Tabs.svelte";
 </script>
 
 {#if library.ready && library.songs.length === 0}
   <Empty />
 {:else}
-  <div class="scroll h-full px-8 pb-10">
-    <header class="pt-6 pb-6">
-      <h1 class="display text-[34px] leading-none font-semibold">Albums</h1>
-      <p class="mt-2 text-[13px] text-paper-3">{count(library.albums.length, "album", "albums")}</p>
-    </header>
-    <AlbumGrid albums={library.albums} />
+  <div class="scroll h-full px-10 pb-32">
+    <Tabs meta={count(library.albums.length, "album", "albums")} />
+    <div class="mx-auto max-w-[1180px]"><AlbumGrid albums={library.albums} /></div>
   </div>
 {/if}

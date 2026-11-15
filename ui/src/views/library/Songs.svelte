@@ -7,6 +7,7 @@
   import Button from "../../components/ui/Button.svelte";
   import Select from "../../components/ui/Select.svelte";
   import Empty from "./Empty.svelte";
+  import Tabs from "./Tabs.svelte";
 
   let { recent = false }: { recent?: boolean } = $props();
 
@@ -26,33 +27,29 @@
   const total = $derived(songs.reduce((sum, song) => sum + song.duration, 0));
 </script>
 
-{#if library.ready && library.folders.length === 0 && library.songs.length === 0}
+{#if library.ready && library.songs.length === 0}
   <Empty />
 {:else}
-  <div bind:this={scroller} class="scroll h-full px-8 pb-10">
-    <header class="flex items-end justify-between gap-6 pt-6 pb-6">
-      <div>
-        <h1 class="display text-[34px] leading-none font-semibold">{recent ? "Recently added" : "Songs"}</h1>
-        <p class="mt-2 text-[13px] text-paper-3">{count(songs.length, "song", "songs")} · {length(total)}</p>
-      </div>
-      <div class="flex items-center gap-2">
-        {#if !recent}
-          <Select
-            bind:value={order}
-            label="Sort songs"
-            class="w-40"
-            options={[
-              { value: "title", label: "By title" },
-              { value: "artist", label: "By artist" },
-              { value: "album", label: "By album" },
-              { value: "added", label: "Newest first" },
-              { value: "length", label: "By length" },
-            ]}
-          />
-        {/if}
-        <Button kind="primary" icon="play" disabled={!songs.length} onclick={() => player.play(songs.map((song) => song.id), 0, { type: "songs" })}>Play</Button>
-      </div>
-    </header>
-    <SongList {songs} context={{ type: "songs" }} {scroller} />
+  <div bind:this={scroller} class="scroll h-full px-10 pb-32">
+    <Tabs meta="{count(songs.length, 'song', 'songs')} · {length(total)}">
+      <Button kind="primary" icon="play" disabled={!songs.length} onclick={() => player.play(songs.map((song) => song.id), 0, { type: "songs" })}>Play</Button>
+      {#if !recent}
+        <Select
+          bind:value={order}
+          label="Sort songs"
+          class="w-40"
+          options={[
+            { value: "title", label: "By title" },
+            { value: "artist", label: "By artist" },
+            { value: "album", label: "By album" },
+            { value: "added", label: "Newest first" },
+            { value: "length", label: "By length" },
+          ]}
+        />
+      {/if}
+    </Tabs>
+    <div class="mx-auto max-w-[1040px]">
+      <SongList {songs} context={{ type: "songs" }} {scroller} />
+    </div>
   </div>
 {/if}

@@ -11,9 +11,9 @@
   import CoverEditor from "./components/overlays/CoverEditor.svelte";
   import ImportDialog from "./components/overlays/ImportDialog.svelte";
   import Visualizer from "./components/overlays/Visualizer.svelte";
-  import PlayerBar from "./components/shell/PlayerBar.svelte";
-  import QueuePanel from "./components/shell/QueuePanel.svelte";
-  import Sidebar from "./components/shell/Sidebar.svelte";
+  import SearchPalette from "./components/overlays/SearchPalette.svelte";
+  import Capsule from "./components/shell/Capsule.svelte";
+  import QueueSheet from "./components/shell/QueueSheet.svelte";
   import TitleBar from "./components/shell/TitleBar.svelte";
   import Toasts from "./components/shell/Toasts.svelte";
   import Menu from "./components/ui/Menu.svelte";
@@ -22,10 +22,9 @@
   import Artist from "./views/library/Artist.svelte";
   import Artists from "./views/library/Artists.svelte";
   import SongEditor from "./views/editor/SongEditor.svelte";
-  import NowPlaying from "./views/NowPlaying.svelte";
+  import Listen from "./views/Listen.svelte";
   import Playlist from "./views/playlist/Playlist.svelte";
   import Playlists from "./views/playlist/Playlists.svelte";
-  import Search from "./views/library/Search.svelte";
   import Songs from "./views/library/Songs.svelte";
   import Sound from "./views/Sound.svelte";
 
@@ -68,8 +67,11 @@
   }
 
   function key(event: KeyboardEvent) {
-    if (typing(event.target) || ui.coverTarget || ui.importing) return;
-    if (event.key === " ") {
+    if (typing(event.target) || ui.coverTarget || ui.importing || ui.searching) return;
+    if ((event.key === "k" && event.ctrlKey) || event.key === "/") {
+      event.preventDefault();
+      ui.searching = true;
+    } else if (event.key === " ") {
       event.preventDefault();
       void player.toggle();
     } else if (event.key === "ArrowRight" && event.altKey) {
@@ -92,12 +94,12 @@
 
 <svelte:window onkeydown={key} ondragover={(event) => event.preventDefault()} ondrop={dropped} />
 
-<div class="grid h-full grid-cols-[232px_minmax(0,1fr)] grid-rows-[48px_minmax(0,1fr)_88px]">
+<div class="flex h-full flex-col">
   <TitleBar />
-  <Sidebar />
-  <main class="relative min-h-0 overflow-hidden rounded-tl-2xl bg-ink-2/40">
+  <main class="relative min-h-0 flex-1 overflow-hidden">
     {#key JSON.stringify(ui.route)}
-      {#if ui.route.view === "songs"}<Songs />
+      {#if ui.route.view === "listen"}<Listen />
+      {:else if ui.route.view === "songs"}<Songs />
       {:else if ui.route.view === "recent"}<Songs recent />
       {:else if ui.route.view === "albums"}<Albums />
       {:else if ui.route.view === "album"}<Album key={ui.route.key} />
@@ -106,16 +108,15 @@
       {:else if ui.route.view === "playlists"}<Playlists />
       {:else if ui.route.view === "playlist"}<Playlist id={ui.route.id} />
       {:else if ui.route.view === "sound"}<Sound />
-      {:else if ui.route.view === "now"}<NowPlaying />
       {:else if ui.route.view === "edit"}<SongEditor song={ui.route.song} next={ui.route.next} context={ui.route.context} />
-      {:else if ui.route.view === "search"}<Search />
       {/if}
     {/key}
-    {#if ui.queueOpen}<QueuePanel />{/if}
   </main>
-  <PlayerBar />
 </div>
 
+{#if ui.route.view !== "listen"}<Capsule />{/if}
+{#if ui.queueOpen}<QueueSheet />{/if}
+{#if ui.searching}<SearchPalette />{/if}
 {#if ui.visualizer}<Visualizer />{/if}
 {#if ui.coverTarget}<CoverEditor target={ui.coverTarget} />{/if}
 {#if ui.importing}<ImportDialog path={ui.importing} />{/if}

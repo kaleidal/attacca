@@ -1,43 +1,58 @@
 <script lang="ts">
   import { appWindow } from "@lantharos/sabine";
-  import { ui } from "../../lib/stores/ui.svelte";
+  import { library } from "../../lib/stores/library.svelte";
+  import { ui, type Route, type Section } from "../../lib/stores/ui.svelte";
   import Icon from "../ui/Icon.svelte";
 
   let maximized = $state(appWindow.maximized);
   $effect(() => appWindow.onStateChanged((state) => (maximized = state.maximized)));
 
-  function search(value: string) {
-    ui.search = value;
-    if (value.trim() && ui.route.view !== "search") ui.go({ view: "search" });
-  }
+  const sections: { section: Section; label: string; route: Route }[] = [
+    { section: "listen", label: "Listen", route: { view: "listen" } },
+    { section: "library", label: "Library", route: { view: "songs" } },
+    { section: "playlists", label: "Playlists", route: { view: "playlists" } },
+    { section: "sound", label: "Sound", route: { view: "sound" } },
+  ];
+
+  const deep = $derived(["album", "artist", "playlist", "edit"].includes(ui.route.view));
 </script>
 
-<header class="drag col-span-2 flex h-12 items-center gap-3 pl-[calc(var(--sabine-controls-left,0px)+16px)]">
-  <div class="no-drag flex items-center gap-1">
-    <button type="button" aria-label="Back" disabled={!ui.canGoBack} class="flex size-8 items-center justify-center rounded-lg text-paper-3 hover:bg-ink-3 hover:text-paper disabled:opacity-30" onclick={() => ui.back()}>
-      <Icon name="back" size={18} />
-    </button>
+<header class="drag relative flex h-14 shrink-0 items-center">
+  <div class="flex items-center gap-1 pl-[calc(var(--sabine-controls-left,0px)+14px)]">
+    {#if deep}
+      <button type="button" aria-label="Back" class="no-drag flex size-8 items-center justify-center rounded-full text-paper-2 hover:bg-ink-3 hover:text-paper" onclick={() => ui.back()}>
+        <Icon name="back" size={18} />
+      </button>
+    {:else}
+      <span class="display px-2 text-[19px] font-semibold tracking-tight">attacca</span>
+    {/if}
+    {#if library.scanning}<span class="ml-1 size-1.5 animate-pulse rounded-full bg-accent" title="Reading your folders"></span>{/if}
   </div>
-  <div class="flex flex-1 justify-center">
-    <label class="no-drag group flex h-8 w-[min(420px,46vw)] items-center gap-2 rounded-lg bg-ink-2 px-3 text-paper-3 focus-within:bg-ink-3 focus-within:text-paper-2">
-      <Icon name="search" size={15} />
-      <input
-        value={ui.search}
-        placeholder="Search songs, albums, artists"
-        aria-label="Search"
-        spellcheck="false"
-        class="h-full w-full bg-transparent text-[13px] text-paper outline-none placeholder:text-paper-4"
-        oninput={(event) => search(event.currentTarget.value)}
-        onkeydown={(event) => event.key === "Escape" && (search(""), event.currentTarget.blur())}
-      />
-    </label>
-  </div>
-  <div class="window-controls flex h-12 self-start" aria-hidden="true">
-    {#each [["minimize", "minimize"], ["maximize", maximized ? "restore" : "maximize"], ["close", "close"]] as [kind, icon] (kind)}
-      <span class="flex h-12 w-[46px] items-center justify-center text-paper-3 transition-colors {kind === 'close' ? 'hover:bg-[#c42b1c] hover:text-white' : 'hover:bg-ink-3 hover:text-paper'}">
-        <Icon name={icon as "minimize"} size={15} />
-      </span>
+
+  <nav aria-label="Sections" class="no-drag absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-full bg-ink-2 p-1">
+    {#each sections as entry (entry.section)}
+      <button
+        type="button"
+        aria-current={ui.section === entry.section ? "page" : undefined}
+        class="rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors {ui.section === entry.section ? 'bg-ink-4 text-paper' : 'text-paper-3 hover:text-paper-2'}"
+        onclick={() => ui.go(entry.route)}
+      >
+        {entry.label}
+      </button>
     {/each}
+  </nav>
+
+  <div class="ml-auto flex h-full items-center">
+    <button type="button" aria-label="Search" class="no-drag mr-2 flex size-8 items-center justify-center rounded-full text-paper-2 hover:bg-ink-3 hover:text-paper" onclick={() => (ui.searching = true)}>
+      <Icon name="search" size={17} />
+    </button>
+    <div class="window-controls flex h-full" aria-hidden="true">
+      {#each [["minimize", "minimize"], ["maximize", maximized ? "restore" : "maximize"], ["close", "close"]] as [kind, icon] (kind)}
+        <span class="flex h-full w-[46px] items-center justify-center text-paper-3 transition-colors {kind === 'close' ? 'hover:bg-[#c42b1c] hover:text-white' : 'hover:bg-ink-3 hover:text-paper'}">
+          <Icon name={icon as "minimize"} size={15} />
+        </span>
+      {/each}
+    </div>
   </div>
 </header>
 

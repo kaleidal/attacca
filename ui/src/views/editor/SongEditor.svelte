@@ -109,15 +109,16 @@
 </script>
 
 {#if song}
-  <div class="scroll h-full px-8 pb-12">
-    <header class="flex items-center gap-4 pt-6 pb-7">
-      <Cover cover={song.cover} label={title(song)} size={64} />
-      <div class="min-w-0 flex-1">
-        <h1 class="display truncate text-[30px] leading-tight font-semibold">{title(song)}</h1>
-        <p class="truncate text-[14px] text-paper-3">{artist(song)}{listening?.rhythm ? ` · ${Math.round(listening.rhythm.tempo)} BPM` : ""}{listening ? ` · ${listening.loudness.toFixed(1)} LUFS` : ""}</p>
+  <div class="scroll h-full px-10 pb-32">
+    <div class="mx-auto max-w-[1180px]">
+    <header class="flex flex-col items-center pt-4 pb-8 text-center">
+      <Cover cover={song.cover} label={title(song)} size={88} class="rounded-xl! shadow-[0_18px_50px_rgb(0_0_0/0.5)]" />
+      <h1 class="display mt-5 max-w-[760px] truncate text-[34px] leading-tight font-semibold">{title(song)}</h1>
+      <p class="mt-1 text-[14px] text-paper-3">{artist(song)}{listening?.rhythm ? ` · ${Math.round(listening.rhythm.tempo)} BPM` : ""}{listening ? ` · ${listening.loudness.toFixed(1)} LUFS` : ""}</p>
+      <div class="mt-5 flex items-center gap-2">
+        <Button kind="primary" icon="play" disabled={!nextSong} onclick={preview}>{nextSong ? `Hear the transition into ${title(nextSong)}` : "Hear the transition"}</Button>
+        <Button kind="quiet" icon="reset" onclick={reset} disabled={!song.edited && JSON.stringify(edits) === JSON.stringify({ start: null, end: null, volume: 0, equalizer: null, filters: null, transition: null })}>Reset</Button>
       </div>
-      <Button kind="plain" icon="reset" onclick={reset} disabled={!song.edited && JSON.stringify(edits) === JSON.stringify({ start: null, end: null, volume: 0, equalizer: null, filters: null, transition: null })}>Reset</Button>
-      <Button kind="primary" icon="play" disabled={!nextSong} onclick={preview}>{nextSong ? `Hear the transition into ${title(nextSong)}` : "Hear the transition"}</Button>
     </header>
 
     <Segment {peaks} from={0} to={duration} height={132} {start} {end} position={now} {beats} downbeat={listening?.rhythm?.downbeat ?? 0} handles={["start", "end"]} onpick={move} onrelease={release} />
@@ -154,7 +155,7 @@
         </div>
       {/each}
     </div>
-    <p class="mt-3 text-[12px] text-paper-4">Drag a handle to hear the moment around it. Dashed lines mark where Attacca suggests.</p>
+    <p class="mt-3 text-center text-[12px] text-paper-4">Drag a handle to hear the moment around it. Dashed lines mark where Attacca suggests.</p>
 
     <div class="mt-10 grid grid-cols-1 gap-x-14 gap-y-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
       <section class="flex flex-col gap-10">
@@ -191,6 +192,7 @@
           <p class="text-[13px] text-paper-3">This song uses the equalizer and filters from Sound.</p>
         {/if}
       </section>
+    </div>
     </div>
   </div>
 {/if}

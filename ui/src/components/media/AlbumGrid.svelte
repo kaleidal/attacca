@@ -13,7 +13,7 @@
   }
 </script>
 
-<div class="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-x-5 gap-y-7">
+<div class="grid grid-cols-[repeat(auto-fit,176px)] justify-center gap-x-6 gap-y-8">
   {#each albums as album (album.key)}
     <div
       role="button"

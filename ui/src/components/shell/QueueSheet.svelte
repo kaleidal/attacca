@@ -22,21 +22,22 @@
   }
 </script>
 
-<aside transition:fly={{ x: 24, duration: 200 }} class="absolute top-0 right-0 bottom-0 z-30 flex w-[360px] flex-col bg-ink-2 shadow-[-24px_0_48px_rgb(0_0_0/0.35)]">
-  <div class="flex items-center justify-between px-5 pt-4 pb-3">
+<div role="presentation" class="fixed inset-0 z-30" onpointerdown={() => (ui.queueOpen = false)}></div>
+<aside transition:fly={{ y: 24, duration: 220 }} class="fixed bottom-[92px] left-1/2 z-40 flex max-h-[min(560px,70vh)] w-[min(520px,calc(100%-48px))] -translate-x-1/2 flex-col rounded-3xl bg-ink-3 shadow-[0_24px_70px_rgb(0_0_0/0.6)]">
+  <div class="flex items-center justify-between px-5 pt-5 pb-3">
     <h2 class="display text-lg font-semibold">Up next</h2>
     <div class="flex items-center gap-1">
       {#if player.upNext.length}
-        <button type="button" class="rounded-lg px-2.5 py-1 text-[13px] text-paper-3 hover:bg-ink-3 hover:text-paper" onclick={() => commands.playerClear()}>Clear</button>
+        <button type="button" class="rounded-full px-3 py-1 text-[13px] text-paper-3 hover:bg-ink-4 hover:text-paper" onclick={() => commands.playerClear()}>Clear</button>
       {/if}
-      <button type="button" aria-label="Close queue" class="flex size-8 items-center justify-center rounded-lg text-paper-3 hover:bg-ink-3 hover:text-paper" onclick={() => (ui.queueOpen = false)}>
+      <button type="button" aria-label="Close queue" class="flex size-8 items-center justify-center rounded-full text-paper-3 hover:bg-ink-4 hover:text-paper" onclick={() => (ui.queueOpen = false)}>
         <Icon name="close" size={16} />
       </button>
     </div>
   </div>
   <div class="scroll flex-1 px-3 pb-4">
     {#if player.song}
-      <div class="mb-2 flex items-center gap-3 rounded-xl bg-ink-3 p-2.5">
+      <div class="mb-2 flex items-center gap-3 rounded-2xl bg-ink-4 p-2.5">
         <Cover cover={player.song.cover} label={title(player.song)} size={40} />
         <div class="min-w-0 flex-1">
           <div class="truncate text-[14px] text-accent">{title(player.song)}</div>
@@ -56,7 +57,7 @@
         <div
           role="listitem"
           draggable="true"
-          class="group flex items-center gap-3 rounded-xl p-2 hover:bg-ink-3 {over === index ? 'shadow-[inset_0_2px_0_var(--accent)]' : ''} {dragging === index ? 'opacity-40' : ''}"
+          class="group flex items-center gap-3 rounded-xl p-2 hover:bg-ink-4 {over === index ? 'shadow-[inset_0_2px_0_var(--accent)]' : ''} {dragging === index ? 'opacity-40' : ''}"
           ondragstart={() => (dragging = index)}
           ondragover={(event) => (event.preventDefault(), (over = index))}
           ondragend={() => ((dragging = null), (over = null))}

@@ -36,12 +36,12 @@
 </script>
 
 {#if settings}
-  <div class="scroll h-full px-8 pb-12">
-    <header class="pt-6 pb-8">
-      <h1 class="display text-[34px] leading-none font-semibold">Sound and folders</h1>
+  <div class="scroll h-full px-10 pb-32">
+    <header class="flex flex-col items-center pt-7 pb-10">
+      <h1 class="display text-[32px] leading-none font-semibold">Sound</h1>
     </header>
 
-    <div class="grid grid-cols-1 gap-x-14 gap-y-12 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+    <div class="mx-auto flex max-w-[680px] flex-col gap-14">
       <section>
         <div class="mb-5 flex items-center justify-between gap-4">
           <h2 class="display text-xl font-semibold">Equalizer</h2>
@@ -70,7 +70,7 @@
         <FiltersPanel filters={settings.filters} onchange={(filters) => sound.change((current) => (current.filters = filters))} />
       </section>
 
-      <section class="flex flex-col gap-7">
+      <section class="flex flex-col gap-10">
         <div class="flex items-start justify-between gap-6">
           <div>
             <h2 class="display text-xl font-semibold">Volume matching</h2>

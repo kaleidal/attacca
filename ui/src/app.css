@@ -74,7 +74,11 @@ button {
 :focus-visible {
   outline: 1.5px solid var(--color-accent);
   outline-offset: 2px;
-  border-radius: 4px;
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
 }
 
 .drag {
