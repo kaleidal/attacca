@@ -12,6 +12,11 @@ pub const WAVE: usize = 256;
 const SIZE: usize = 2048;
 const FRAME: Duration = Duration::from_micros(16_667);
 const FLOOR_DB: f32 = -72.0;
+/// How much of the height the loudest recent sample reaches in the waveform.
+const WAVE_FILL: f32 = 0.9;
+/// Below this the waveform stops being scaled up, so silence stays flat.
+const QUIET: f32 = 0.02;
+const PEAK_FALL: f32 = 0.97;
 
 /// Turns the mixed output into spectrum bands and a waveform about sixty times a second, while
 /// someone is watching.
@@ -62,6 +67,7 @@ struct Analyser {
     fft: Arc<dyn realfft::RealToComplex<f32>>,
     edges: [usize; BANDS + 1],
     levels: [f32; BANDS],
+    peak: f32,
 }
 
 impl Analyser {
@@ -84,6 +90,7 @@ impl Analyser {
             fft,
             edges,
             levels: [0.0; BANDS],
+            peak: 0.0,
         }
     }
 
@@ -118,8 +125,17 @@ impl Analyser {
             bytes.push((self.levels[band] * 255.0) as u8);
         }
         let step = SIZE / 2 / WAVE;
+        let start = self.write + SIZE / 2;
+        let peak = (0..SIZE / 2)
+            .map(|i| self.ring[(start + i) % SIZE].abs())
+            .fold(0.0, f32::max);
+        self.peak = peak.max(self.peak * PEAK_FALL);
+        let gain = WAVE_FILL / self.peak.max(QUIET);
         for point in 0..WAVE {
-            let sample = self.ring[(self.write + SIZE / 2 + point * step) % SIZE];
+            let sum: f32 = (0..step)
+                .map(|i| self.ring[(start + point * step + i) % SIZE])
+                .sum();
+            let sample = sum / step as f32 * gain;
             bytes.push(((sample.clamp(-1.0, 1.0) * 127.0) as i8) as u8);
         }
         bytes

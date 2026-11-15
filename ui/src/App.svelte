@@ -13,7 +13,7 @@
   import { ui } from "./lib/stores/ui.svelte";
   import CoverEditor from "./components/overlays/CoverEditor.svelte";
   import ImportDialog from "./components/overlays/ImportDialog.svelte";
-  import Visualizer from "./components/overlays/Visualizer.svelte";
+  import Visualizer from "./components/overlays/visualizer/Visualizer.svelte";
   import SearchPalette from "./components/overlays/SearchPalette.svelte";
   import Capsule from "./components/shell/Capsule.svelte";
   import QueueSheet from "./components/shell/QueueSheet.svelte";
