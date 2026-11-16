@@ -5,7 +5,7 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-sabine = { git = "https://github.com/Lantharos/Sabine", tag = "v0.90", package = "sabine" }
+sabine = { git = "https://github.com/Lantharos/Sabine", tag = "v0.93", package = "sabine" }
 attacca-engine.workspace = true
 attacca-library.workspace = true
 mpris-server.workspace = true

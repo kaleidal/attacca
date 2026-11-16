@@ -10,7 +10,7 @@
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/martian-mono": "^5.3.0",
-    "@lantharos/sabine": "github:Lantharos/Sabine#v0.90"
+    "@lantharos/sabine": "github:Lantharos/Sabine#v0.93"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
