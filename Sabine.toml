@@ -4,6 +4,8 @@ name = "Attacca"
 version = "0.1.0"
 icon = "assets/icon.svg"
 publisher = "Kaleidal"
+maintainer = "Kaleidal <hello@kaleid.al>"
+homepage = "https://github.com/kaleidal/attacca"
 license = "MIT"
 generic_name = "Music Player"
 categories = ["AudioVideo", "Audio", "Player"]
@@ -52,3 +54,8 @@ network = false
 filesystems = ["xdg-music"]
 own = ["org.mpris.MediaPlayer2.attacca"]
 pipewire = true
+
+[updates]
+provider = "schelf"
+channel = "stable"
+policy = "automatic"

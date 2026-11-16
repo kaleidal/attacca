@@ -1,0 +1,17 @@
+#:schema https://schelf.store/schemas/schelf.toml.json
+id = "al.kaleid.attacca"
+kind = "app"
+format = "sabine"
+permissions = "Sabine.toml"
+listing = "store/"
+licence = "MIT"
+repository = "kaleidal/attacca"
+platforms = ["linux-x86_64", "linux-aarch64"]
+
+[requires]
+sabine = "0.95"
+
+[privacy]
+telemetry = "none"
+ads = false
+ai = "none"

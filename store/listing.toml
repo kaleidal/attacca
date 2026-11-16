@@ -1,0 +1,32 @@
+#:schema https://schelf.store/schemas/listing.toml.json
+name = "Attacca"
+summary = "A music player for files you own, where you decide how each song ends and the next begins"
+description = """
+Attacca plays the music on your computer and lets you shape how it flows. Trim where a song starts and ends, then choose how it hands over to the next one.
+
+**Transitions**
+
+- Fade, Rise, Blend, Wave, Melt and Slam, timed to the beat wherever the tempo is known
+- Blend stretches both songs to meet in tempo
+- A transition for each pair of songs in a playlist, with a default for the rest
+
+**Sound**
+
+- A ten-band equalizer, filters, volume matching and a limiter
+- Gapless playback
+
+**Library**
+
+- Watches your music folders and reads tags and covers
+- Edit covers and keep them in Attacca or write them into your files
+- A visualizer in five styles
+- Share playlists, with their transitions, as .attacca files
+"""
+keywords = ["music", "player", "playlist", "crossfade", "transitions", "equalizer", "dj", "gapless", "flac"]
+categories = ["AudioVideo", "Audio", "Player"]
+homepage = "https://github.com/kaleidal/attacca"
+support = "https://github.com/kaleidal/attacca/issues"
+content_rating = "oars-1.1"
+brand_color = "#ff8f5e"
+icon = "icon.svg"
+listed = true
