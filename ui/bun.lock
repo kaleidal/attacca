@@ -7,7 +7,7 @@
       "dependencies": {
         "@fontsource-variable/bricolage-grotesque": "^5.3.0",
         "@fontsource-variable/martian-mono": "^5.3.0",
-        "@lantharos/sabine": "github:Lantharos/Sabine#v0.93",
+        "@lantharos/sabine": "github:Lantharos/Sabine#v0.95",
       },
       "devDependencies": {
         "@sveltejs/vite-plugin-svelte": "^7.3.1",
@@ -43,7 +43,7 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@lantharos/sabine": ["@lantharos/sabine@github:Lantharos/Sabine#2d0c2a5", {}, "Lantharos-Sabine-2d0c2a5", "sha512-WY8jOPFPUMjq69ljiQGPBf+dMCblbuRvpYdS4XhmxKvbKzDXCpyHw+KYgATlro0CqwTBqwShgb4kLBOELLNT9w=="],
+    "@lantharos/sabine": ["@lantharos/sabine@github:Lantharos/Sabine#560ad74", {}, "Lantharos-Sabine-560ad74", "sha512-grLFQjs/eP+8EbuQNJXDJQo2vTVbZlAWj8A3QtpZqM6CWF6sA/4KCqfUXQ3SrMSA582PzK5tW4u3SpWcVj9Cdw=="],
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.2.6", "", { "dependencies": { "@tybys/wasm-util": "^0.10.3" }, "peerDependencies": { "@emnapi/core": "^1.7.1 || 2.0.0-beta.2", "@emnapi/runtime": "^1.7.1 || 2.0.0-beta.2" } }, "sha512-mRyDmEw9/fCDXCGfL1sbgIw/GUK0PVxRW4YwgPN61F3LQ+fSyoBFarJVzgGyhF6kRzEQZ0FejDqm4WLXSeqQmw=="],
 

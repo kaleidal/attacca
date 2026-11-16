@@ -46,3 +46,9 @@ local_files = true
 
 [bindings]
 path = "ui/src/lib/bindings.ts"
+
+[sandbox]
+network = false
+filesystems = ["xdg-music"]
+own = ["org.mpris.MediaPlayer2.attacca"]
+pipewire = true

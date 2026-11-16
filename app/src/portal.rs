@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use ashpd::desktop::file_chooser::{FileFilter, SelectedFiles};
+use sabine::documents::{Handed, within_reach};
 
 /// Turns a `file://` URI into a path, decoding its escaped bytes.
 fn file_path(uri: &str) -> Option<PathBuf> {
@@ -34,7 +35,12 @@ fn first_path(files: SelectedFiles) -> Option<PathBuf> {
     files.uris().first().and_then(|uri| file_path(uri.as_str()))
 }
 
-/// Asks the desktop for a folder.
+async fn reach(path: PathBuf, handed: Handed) -> Option<PathBuf> {
+    within_reach(vec![path], handed).await.ok()?.pop()
+}
+
+/// Asks the desktop for a folder. One the app already reaches keeps its path, so the library can
+/// watch it; any other comes through the document portal.
 pub async fn pick_folder(title: &str) -> Option<PathBuf> {
     let request = SelectedFiles::open_file()
         .title(title)
@@ -43,7 +49,11 @@ pub async fn pick_folder(title: &str) -> Option<PathBuf> {
         .send()
         .await
         .ok()?;
-    first_path(request.response().ok()?)
+    let folder = first_path(request.response().ok()?)?;
+    if std::fs::read_dir(&folder).is_ok() {
+        return Some(folder);
+    }
+    reach(folder, Handed::Existing).await
 }
 
 /// Asks the desktop where to save a file.
@@ -56,5 +66,5 @@ pub async fn pick_save(title: &str, name: &str, filter: (&str, &str)) -> Option<
         .send()
         .await
         .ok()?;
-    first_path(request.response().ok()?)
+    reach(first_path(request.response().ok()?)?, Handed::New).await
 }
