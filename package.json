@@ -1,0 +1,5 @@
+{
+  "name": "attacca",
+  "private": true,
+  "workspaces": ["ui"]
+}
