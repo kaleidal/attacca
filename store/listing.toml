@@ -30,3 +30,23 @@ content_rating = "oars-1.1"
 brand_color = "#ff8f5e"
 icon = "icon.svg"
 listed = true
+
+[[screenshots]]
+file = "screenshots/listen.png"
+caption = "The next transition, right on the waveform"
+
+[[screenshots]]
+file = "screenshots/transitions.png"
+caption = "Choose how each song hands over to the next"
+
+[[screenshots]]
+file = "screenshots/library.png"
+caption = "Your albums, read from your own folders"
+
+[[screenshots]]
+file = "screenshots/visualizer.png"
+caption = "A visualizer in five styles"
+
+[[screenshots]]
+file = "screenshots/sound.png"
+caption = "Equalizer, filters and volume matching"

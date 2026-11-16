@@ -78,7 +78,7 @@
         <h1 class="display w-full truncate text-[clamp(30px,3.6vw,48px)] leading-[1.05] font-semibold">{title(song)}</h1>
         <p class="mt-2 truncate text-[16px] text-paper-2">
           <button type="button" class="hover:text-paper" onclick={() => ui.go({ view: "artist", name: artist(song) })}>{artist(song)}</button>
-          {#if song.album}<span class="text-paper-4"> · </span><span class="text-paper-3">{song.album}</span>{/if}
+          {#if song.album}<span class="mx-1.5 text-paper-4">·</span><span class="text-paper-3">{song.album}</span>{/if}
         </p>
       </div>
       {/key}
