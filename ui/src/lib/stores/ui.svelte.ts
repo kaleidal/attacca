@@ -8,6 +8,7 @@ export type Route =
   | { view: "album"; key: string }
   | { view: "artists" }
   | { view: "artist"; name: string }
+  | { view: "folders"; path: string | null }
   | { view: "playlists" }
   | { view: "playlist"; id: number }
   | { view: "sound" }
@@ -24,6 +25,7 @@ const sections: Record<Route["view"], Section> = {
   album: "library",
   artists: "library",
   artist: "library",
+  folders: "library",
   playlists: "playlists",
   playlist: "playlists",
   sound: "sound",
@@ -49,6 +51,7 @@ class UiStore {
   visualizer = $state(false);
   searching = $state(false);
   coverTarget = $state<CoverTarget | null>(null);
+  seam = $state<{ from: string; to: string; context: Context } | null>(null);
   importing = $state<string | null>(null);
   menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
   toasts = $state<Toast[]>([]);

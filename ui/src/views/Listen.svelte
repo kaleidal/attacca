@@ -115,10 +115,14 @@
       <div class="mb-2 grid grid-cols-[1fr_auto_1fr] items-baseline text-[12px]">
         <span class="numeric text-paper-2">{clock(now)}</span>
         {#if upcoming && next}
-          <span class="flex items-center gap-2 text-paper-3">
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded-full px-2.5 py-1 text-paper-3 transition-colors hover:bg-ink-3 hover:text-paper-2"
+            onclick={() => (ui.seam = { from: song.id, to: next.id, context: player.current?.context ?? { type: "queue" } })}
+          >
             <TransitionGlyph kind={upcoming.kind} width={26} />
             {info(upcoming.kind).label} into <span class="text-paper-2">{title(next)}</span>{upcoming.overlap > 0 ? ` at ${clock(upcoming.cue)}` : ""}
-          </span>
+          </button>
         {:else}
           <span class="text-paper-4">The queue ends here</span>
         {/if}

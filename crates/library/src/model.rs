@@ -18,6 +18,8 @@ pub struct Song {
     pub name: String,
     /// Name of the folder holding the file, shown when the song has no album.
     pub folder: String,
+    /// Where the song's file is.
+    pub path: String,
     pub cover: Option<String>,
     pub added: i64,
     pub tempo: Option<f32>,

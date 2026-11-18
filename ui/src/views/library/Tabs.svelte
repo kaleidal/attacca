@@ -9,6 +9,7 @@
     { label: "Songs", route: { view: "songs" } },
     { label: "Albums", route: { view: "albums" } },
     { label: "Artists", route: { view: "artists" } },
+    { label: "Folders", route: { view: "folders", path: null } },
     { label: "Recent", route: { view: "recent" } },
   ];
 

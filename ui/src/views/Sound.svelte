@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CoverWrites, Equalizer } from "../lib/bindings";
+  import type { CoverWrites, Equalizer, Names } from "../lib/bindings";
   import { library } from "../lib/stores/library.svelte";
   import { sound } from "../lib/stores/sound.svelte";
   import EqualizerPanel from "../components/sound/EqualizerPanel.svelte";
@@ -86,6 +86,18 @@
             class="max-w-md"
             options={[{ value: null, label: "System default" }, ...sound.devices.map((device) => ({ value: device.name as string | null, label: device.description }))]}
             onchange={(output) => sound.change((current) => (current.output = output))}
+          />
+        </div>
+        <div>
+          <h2 class="display mb-3 text-xl font-semibold">Song names</h2>
+          <Segmented
+            value={settings.names}
+            label="Song names"
+            options={[
+              { value: "tags" as Names, label: "From the tags" },
+              { value: "files" as Names, label: "From the file names" },
+            ]}
+            onchange={(names) => sound.change((current) => (current.names = names))}
           />
         </div>
         <div>

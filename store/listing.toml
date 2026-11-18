@@ -9,6 +9,7 @@ Attacca plays the music on your computer and lets you shape how it flows. Trim w
 - Fade, Rise, Blend, Wave, Melt and Slam, timed to the beat wherever the tempo is known
 - Blend stretches both songs to meet in tempo
 - A transition for each pair of songs in a playlist, with a default for the rest
+- See both songs overlap and drag where the transition starts, how long it lasts and where the next song comes in
 
 **Sound**
 
@@ -18,6 +19,7 @@ Attacca plays the music on your computer and lets you shape how it flows. Trim w
 **Library**
 
 - Watches your music folders and reads tags and covers
+- Browse by song, album, artist or folder
 - Edit covers and keep them in Attacca or write them into your files
 - A visualizer in five styles
 - Share playlists, with their transitions, as .attacca files

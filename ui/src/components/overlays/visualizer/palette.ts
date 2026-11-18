@@ -34,6 +34,14 @@ export function accentPalette(): Float32Array {
   return flatten(ACCENT_SHIFTS.map(([turn, saturate, lighten]) => fromHsl([hue + turn, saturation * saturate, lightness * lighten])));
 }
 
+const MONO_LIGHTNESS = [0.82, 0.62, 0.46, 0.7];
+
+/** Greys warmed by the interface's paper colour. */
+export function monoPalette(): Float32Array {
+  const [hue, saturation] = toHsl(parseColor(getComputedStyle(document.documentElement).getPropertyValue("--color-paper")));
+  return flatten(MONO_LIGHTNESS.map((lightness) => fromHsl([hue, saturation * 0.35, lightness])));
+}
+
 async function sample(url: string): Promise<Rgb[]> {
   const image = new Image();
   image.src = url;

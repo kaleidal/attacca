@@ -1,4 +1,5 @@
 import type { Song } from "./bindings";
+import { sound } from "./stores/sound.svelte";
 
 export function clock(seconds: number): string {
   const total = Math.max(0, Math.floor(seconds));
@@ -23,7 +24,7 @@ export function length(seconds: number): string {
 }
 
 export function title(song: Song): string {
-  return song.title ?? song.name;
+  return sound.settings?.names === "files" ? song.name : (song.title ?? song.name);
 }
 
 export function artist(song: Song): string {

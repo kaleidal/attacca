@@ -25,6 +25,15 @@ pub enum CoverWrites {
     Attacca,
 }
 
+/// What a song is called: the title in its tags, or its file's name.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub enum Names {
+    #[default]
+    Tags,
+    Files,
+}
+
 /// How everything sounds, unless a song says otherwise.
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
@@ -36,6 +45,8 @@ pub struct SoundSettings {
     pub output: Option<String>,
     pub volume: f32,
     pub cover_writes: CoverWrites,
+    #[serde(default)]
+    pub names: Names,
 }
 
 impl Default for SoundSettings {
@@ -48,6 +59,7 @@ impl Default for SoundSettings {
             output: None,
             volume: 0.85,
             cover_writes: CoverWrites::Ask,
+            names: Names::Tags,
         }
     }
 }

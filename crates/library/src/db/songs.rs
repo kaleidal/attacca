@@ -27,7 +27,8 @@ pub struct NewSong {
 }
 
 const SONG_COLUMNS: &str = "s.id, s.title, s.artist, s.album, s.album_artist, s.track, s.disc, s.year, s.genre, s.duration,
-    s.name, s.folder, COALESCE(k.cover, s.cover), s.added, a.tempo, a.version IS NOT NULL, e.value";
+    s.name, s.folder, COALESCE(k.cover, s.cover), s.added, a.tempo, a.version IS NOT NULL, e.value,
+    COALESCE((SELECT MIN(f.path) FROM files f WHERE f.song = s.id), '')";
 const SONG_JOINS: &str = "FROM songs s
     LEFT JOIN analysis a ON a.song = s.id
     LEFT JOIN edits e ON e.song = s.id
@@ -52,6 +53,7 @@ fn song_from(row: &Row<'_>) -> rusqlite::Result<Song> {
         duration: row.get(9)?,
         name: row.get(10)?,
         folder: row.get(11)?,
+        path: row.get(17)?,
         cover: row.get(12)?,
         added: row.get(13)?,
         tempo: row.get(14)?,

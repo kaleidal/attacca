@@ -15,6 +15,7 @@
   import ImportDialog from "./components/overlays/ImportDialog.svelte";
   import Visualizer from "./components/overlays/visualizer/Visualizer.svelte";
   import SearchPalette from "./components/overlays/SearchPalette.svelte";
+  import SeamDialog from "./components/overlays/SeamDialog.svelte";
   import Capsule from "./components/shell/Capsule.svelte";
   import QueueSheet from "./components/shell/QueueSheet.svelte";
   import TitleBar from "./components/shell/TitleBar.svelte";
@@ -24,6 +25,7 @@
   import Albums from "./views/library/Albums.svelte";
   import Artist from "./views/library/Artist.svelte";
   import Artists from "./views/library/Artists.svelte";
+  import Folders from "./views/library/Folders.svelte";
   import SongEditor from "./views/editor/SongEditor.svelte";
   import Listen from "./views/Listen.svelte";
   import Playlist from "./views/playlist/Playlist.svelte";
@@ -70,7 +72,7 @@
   }
 
   function key(event: KeyboardEvent) {
-    if (typing(event.target) || ui.coverTarget || ui.importing || ui.searching) return;
+    if (typing(event.target) || ui.coverTarget || ui.importing || ui.searching || ui.seam) return;
     if ((event.key === "k" && event.ctrlKey) || event.key === "/") {
       event.preventDefault();
       ui.searching = true;
@@ -109,6 +111,7 @@
       {:else if ui.route.view === "album"}<Album key={ui.route.key} />
       {:else if ui.route.view === "artists"}<Artists />
       {:else if ui.route.view === "artist"}<Artist name={ui.route.name} />
+      {:else if ui.route.view === "folders"}<Folders path={ui.route.path} />
       {:else if ui.route.view === "playlists"}<Playlists />
       {:else if ui.route.view === "playlist"}<Playlist id={ui.route.id} />
       {:else if ui.route.view === "sound"}<Sound />
@@ -125,5 +128,6 @@
 {#if ui.visualizer}<Visualizer />{/if}
 {#if ui.coverTarget}<CoverEditor target={ui.coverTarget} />{/if}
 {#if ui.importing}<ImportDialog path={ui.importing} />{/if}
+{#if ui.seam}<SeamDialog {...ui.seam} />{/if}
 <Menu />
 <Toasts />

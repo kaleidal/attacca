@@ -28,7 +28,7 @@
   const results = $derived.by((): Result[] => {
     const text = query.trim().toLowerCase();
     if (!text) return [];
-    const songs = library.songs.filter((song) => matches(song.title ?? song.name, text) || matches(song.artist, text) || matches(song.album, text)).slice(0, 6);
+    const songs = library.songs.filter((song) => matches(title(song), text) || matches(song.artist, text) || matches(song.album, text)).slice(0, 6);
     const albums = library.albums.filter((album) => matches(album.title, text) || matches(album.artist, text)).slice(0, 4);
     const artists = library.artists.filter((entry) => matches(entry.name, text)).slice(0, 3);
     const playlists = library.playlists.filter((playlist) => matches(playlist.name, text)).slice(0, 3);

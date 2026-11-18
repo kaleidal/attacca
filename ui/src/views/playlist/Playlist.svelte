@@ -61,6 +61,13 @@
     void commands.playlistsSetTransition({ id, transition });
   }
 
+  function order(entries: number[]) {
+    if (!playlist) return;
+    const byId = new Map(playlist.entries.map((entry) => [entry.id, entry]));
+    playlist.entries = entries.map((entry) => byId.get(entry)!);
+    void commands.playlistsOrder({ id, entries });
+  }
+
   function songAfter(song: Song) {
     const index = songs.findIndex((entry) => entry.id === song.id);
     return songs[index + 1] ?? null;
@@ -117,7 +124,7 @@
     </Hero>
 
     <div class="mx-auto max-w-[880px]">
-      <Entries {playlist} {context} {fallback} {songAfter} onplay={(song) => play(songs.findIndex((entry) => entry.id === song.id))} />
+      <Entries {playlist} {context} {fallback} {songAfter} onplay={(song) => play(songs.findIndex((entry) => entry.id === song.id))} onorder={order} />
     </div>
   </div>
 {/if}

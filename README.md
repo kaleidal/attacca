@@ -2,11 +2,12 @@
 
 A music player for files you own, built around one idea: you decide how each song ends and how the next one begins.
 
-- Plays a local library of songs, albums, artists and playlists, with a queue.
+- Plays a local library of songs, albums, artists, folders and playlists, with a queue. Songs go by the titles in their tags or by their file names.
 - Sets where each song starts and ends without touching the file.
 - Moves between songs with one of six transitions: fade, rise, blend, wave, melt and slam. Albums play gapless.
+- Shows each transition as the end of one song over the start of the next, where you drag where it starts, how long it lasts and where the next song comes in.
 - Shapes the sound with a ten-band equalizer, high-pass and low-pass filters and volume matching, globally or per song.
-- Shows a visualizer driven by the mixed output.
+- Shows a visualizer driven by the mixed output, in five styles with its own colours and intensity.
 - Edits covers for songs, albums and playlists.
 - Shares a playlist as a small `.attacca` file. The other person's own copies of the songs fill it in.
 

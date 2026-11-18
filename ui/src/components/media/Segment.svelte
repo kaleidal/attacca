@@ -1,3 +1,14 @@
+<script lang="ts" module>
+  export interface Handle {
+    id: string;
+    at: number;
+    /** Which way its flag points: into the part that plays. */
+    side: "start" | "end";
+    /** A colour token in place of the accent. */
+    color?: string;
+  }
+</script>
+
 <script lang="ts">
   import { WAVEFORM_RATE } from "../../lib/media";
 
@@ -12,9 +23,11 @@
     downbeat = 0,
     position = null,
     ghosts = [],
+    region = null,
     onpick,
     onrelease,
     handles,
+    class: className = "bg-ink-2",
   }: {
     peaks: Uint8Array | null;
     from: number;
@@ -26,14 +39,16 @@
     downbeat?: number;
     position?: number | null;
     ghosts?: number[];
-    onpick?: (seconds: number, handle: "start" | "end" | null) => void;
+    region?: { from: number; to: number; kind: string } | null;
+    onpick?: (seconds: number, handle: string | null) => void;
     onrelease?: () => void;
-    handles: ("start" | "end")[];
+    handles: Handle[];
+    class?: string;
   } = $props();
 
   let canvas: HTMLCanvasElement;
   let width = $state(0);
-  let dragging = $state<"start" | "end" | null>(null);
+  let dragging = $state<string | null>(null);
 
   const span = $derived(Math.max(0.001, to - from));
   const left = (seconds: number) => ((seconds - from) / span) * 100;
@@ -62,6 +77,7 @@
     for (let column = 0; column < columns; column++) {
       const t0 = from + (column / columns) * span;
       const t1 = from + ((column + 1) / columns) * span;
+      if (t1 <= 0 || t0 * WAVEFORM_RATE >= buckets) continue;
       const b0 = Math.max(0, Math.floor(t0 * WAVEFORM_RATE));
       const b1 = Math.min(buckets, Math.max(b0 + 1, Math.ceil(t1 * WAVEFORM_RATE)));
       let peak = 0;
@@ -80,7 +96,7 @@
 
   function down(event: PointerEvent) {
     const at = seconds(event);
-    const near = handles.toSorted((a, b) => Math.abs((a === "start" ? start : end) - at) - Math.abs((b === "start" ? start : end) - at))[0] ?? null;
+    const near = handles.toSorted((a, b) => Math.abs(a.at - at) - Math.abs(b.at - at))[0]?.id ?? null;
     dragging = near;
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
     onpick?.(at, near);
@@ -94,7 +110,7 @@
 
 <div
   role="presentation"
-  class="relative w-full touch-none overflow-hidden rounded-xl bg-ink-2"
+  class="relative w-full touch-none overflow-hidden rounded-xl {className}"
   style="height:{height}px"
   bind:clientWidth={width}
   onpointerdown={down}
@@ -109,6 +125,12 @@
   {#if end < to}
     <div class="pointer-events-none absolute inset-y-0 right-0 bg-ink/55" style="width:{Math.min(100, 100 - left(end))}%"></div>
   {/if}
+  {#if region && region.to > from && region.from < to}
+    <div
+      class="pointer-events-none absolute inset-y-0 opacity-20"
+      style="left:{Math.max(0, left(region.from))}%;width:{Math.min(100, left(region.to)) - Math.max(0, left(region.from))}%;background:var(--color-{region.kind})"
+    ></div>
+  {/if}
   {#each ghosts as ghost, index (index)}
     {#if ghost >= from && ghost <= to}
       <div class="pointer-events-none absolute inset-y-2 w-px border-l border-dashed border-paper-3/60" style="left:{left(ghost)}%"></div>
@@ -117,11 +139,10 @@
   {#if position !== null && position >= from && position <= to}
     <div class="pointer-events-none absolute inset-y-0 w-px bg-paper/70" style="left:{left(position)}%"></div>
   {/if}
-  {#each handles as handle (handle)}
-    {@const at = handle === "start" ? start : end}
-    {#if at >= from && at <= to}
-      <div class="pointer-events-none absolute inset-y-0 w-[2px] -translate-x-1/2 bg-accent" style="left:{left(at)}%">
-        <div class="absolute top-0 size-2.5 -translate-x-[4px] rounded-b-sm bg-accent {handle === 'end' ? 'right-0 translate-x-[4px]' : 'left-0'}"></div>
+  {#each handles as handle (handle.id)}
+    {#if handle.at >= from && handle.at <= to}
+      <div class="pointer-events-none absolute inset-y-0 w-[2px] -translate-x-1/2 bg-accent" style="left:{left(handle.at)}%;{handle.color ? `background:var(--color-${handle.color})` : ''}">
+        <div class="absolute top-0 size-2.5 -translate-x-[4px] rounded-b-sm bg-inherit {handle.side === 'end' ? 'right-0 translate-x-[4px]' : 'left-0'}"></div>
       </div>
     {/if}
   {/each}

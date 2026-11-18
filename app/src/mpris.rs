@@ -8,6 +8,7 @@ use mpris_server::{
 use parking_lot::Mutex;
 
 use crate::player::PlayerState;
+use crate::settings::Names;
 use crate::state::app;
 
 /// The system's media controls: media keys, the desktop's now-playing widgets.
@@ -44,9 +45,13 @@ fn metadata() -> Metadata {
     let Some(song) = app().library.song(&entry.song) else {
         return Metadata::new();
     };
+    let title = match app().sound.lock().names {
+        Names::Tags => song.display_title().to_string(),
+        Names::Files => song.name.clone(),
+    };
     let mut metadata = Metadata::builder()
         .trackid(track_id(entry.token))
-        .title(song.display_title())
+        .title(title)
         .length(Time::from_micros((song.duration * 1_000_000.0) as i64))
         .build();
     metadata.set_artist(song.artist.clone().map(|artist| [artist]));

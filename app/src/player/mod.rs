@@ -1,4 +1,5 @@
 pub mod plans;
+pub mod seam;
 
 use attacca_engine::{Audition, EngineEvent, TrackPlan};
 use attacca_library::TransitionName;

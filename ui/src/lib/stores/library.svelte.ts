@@ -1,5 +1,6 @@
 import { commands, events, type PlaylistSummary, type Song } from "../bindings";
 import { albumKey, artist, compare, title } from "../format";
+import { folderTree } from "../folders";
 import { forgetWaveform, setCoversFolder } from "../media";
 
 export interface Album {
@@ -79,6 +80,7 @@ class LibraryStore {
   albums = $derived(groupAlbums(this.songs));
   artists = $derived(groupArtists(this.songs, this.albums));
   albumsByKey = $derived(new Map(this.albums.map((album) => [album.key, album])));
+  tree = $derived(folderTree(this.folders, this.songs));
   #reload: ReturnType<typeof setTimeout> | null = null;
 
   async start() {

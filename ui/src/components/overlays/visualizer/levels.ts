@@ -20,8 +20,8 @@ export class Levels {
   #targets = new Float32Array(BANDS);
   #spread = new Float32Array(BANDS);
 
-  update(seconds: number, live: boolean, calm: boolean): boolean {
-    if (live) this.#hear();
+  update(seconds: number, live: boolean, calm: boolean, intensity: number): boolean {
+    if (live) this.#hear(intensity);
     else this.#targets.fill(0);
     const pace = calm ? CALM : 1;
     const rise = 1 - Math.exp(-ATTACK_PER_SECOND * pace * seconds);
@@ -43,10 +43,10 @@ export class Levels {
     return moving;
   }
 
-  #hear() {
+  #hear(intensity: number) {
     for (let band = 0; band < BANDS; band++) {
       const tilt = 0.82 + (0.45 * band) / BANDS;
-      this.#targets[band] = Math.min(1, visual.band(band) ** 1.35 * tilt);
+      this.#targets[band] = Math.min(1, visual.band(band) ** 1.35 * tilt * intensity);
     }
     for (let pass = 0; pass < 2; pass++) {
       for (let band = 0; band < BANDS; band++) {
@@ -56,6 +56,6 @@ export class Levels {
       }
       this.#targets.set(this.#spread);
     }
-    for (let point = 0; point < WAVE; point++) this.wave[point] = Math.round((visual.wave(point) * 0.5 + 0.5) * 255);
+    for (let point = 0; point < WAVE; point++) this.wave[point] = Math.round((Math.max(-1, Math.min(1, visual.wave(point) * intensity)) * 0.5 + 0.5) * 255);
   }
 }

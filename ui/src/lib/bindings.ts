@@ -46,6 +46,12 @@ export const commands = {
 		token: number,
 	}, options?: CallOptions) => invoke<null>("player.jump", params, options),
 	playerNext: (options?: CallOptions) => invoke<null>("player.next", {}, options),
+	playerPlaceSeam: (params: {
+		from: string,
+		to: string,
+		context: Context,
+		trial: Trial,
+	}, options?: CallOptions) => invoke<Upcoming | null>("player.placeSeam", params, options),
 	playerPlay: (params: {
 		songs: string[],
 		index: number,
@@ -220,6 +226,9 @@ export type Missing = {
 	duration: number,
 };
 
+/**  What a song is called: the title in its tags, or its file's name. */
+export type Names = "tags" | "files";
+
 export type Pair = {
 	from: string,
 	to: string,
@@ -296,6 +305,8 @@ export type Song = {
 	name: string,
 	/**  Name of the folder holding the file, shown when the song has no album. */
 	folder: string,
+	/**  Where the song's file is. */
+	path: string,
 	cover: string | null,
 	added: number,
 	tempo: number | null,
@@ -321,6 +332,7 @@ export type SoundSettings = {
 	output: string | null,
 	volume: number,
 	coverWrites: CoverWrites,
+	names: Names,
 };
 
 export type SoundState = {
@@ -335,6 +347,16 @@ export type Transition = {
 };
 
 export type TransitionName = "none" | "fade" | "rise" | "blend" | "wave" | "melt" | "slam";
+
+/**
+ *  What the person is trying out between two songs before it's saved: where the first ends,
+ *  where the second starts and the transition between them.
+ */
+export type Trial = {
+	end?: number | null,
+	start?: number | null,
+	transition?: Transition | null,
+};
 
 /**  The transition into the next song, placed on the playing song's timeline. */
 export type Upcoming = {

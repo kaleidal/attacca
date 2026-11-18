@@ -14,7 +14,7 @@
   import Button from "../../components/ui/Button.svelte";
   import Slider from "../../components/ui/Slider.svelte";
   import Toggle from "../../components/ui/Toggle.svelte";
-  import Segment from "./Segment.svelte";
+  import Segment from "../../components/media/Segment.svelte";
 
   const LOOP = 3;
   const DETAIL = 7;
@@ -76,8 +76,8 @@
     save();
   }
 
-  function move(seconds: number, handle: "start" | "end" | null) {
-    if (!handle) return;
+  function move(seconds: number, handle: string | null) {
+    if (handle !== "start" && handle !== "end") return;
     held ??= { start, end };
     if (handle === "start") edits.start = Math.min(Math.max(0, seconds), end - 1);
     else edits.end = Math.max(Math.min(duration, seconds), start + 1);
@@ -121,7 +121,7 @@
       </div>
     </header>
 
-    <Segment {peaks} from={0} to={duration} height={132} {start} {end} position={now} {beats} downbeat={listening?.rhythm?.downbeat ?? 0} handles={["start", "end"]} onpick={move} onrelease={release} />
+    <Segment {peaks} from={0} to={duration} height={132} {start} {end} position={now} {beats} downbeat={listening?.rhythm?.downbeat ?? 0} handles={[{ id: "start", at: start, side: "start" }, { id: "end", at: end, side: "end" }]} onpick={move} onrelease={release} />
 
     <div class="mt-4 grid grid-cols-2 gap-6">
       {#each ["start", "end"] as const as handle (handle)}
@@ -148,7 +148,7 @@
             {beats}
             downbeat={listening?.rhythm?.downbeat ?? 0}
             ghosts={suggested === undefined ? [] : [suggested]}
-            handles={[handle]}
+            handles={[{ id: handle, at, side: handle }]}
             onpick={move}
             onrelease={release}
           />

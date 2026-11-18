@@ -3,7 +3,8 @@ use serde::Deserialize;
 use specta::Type;
 
 use super::{Nothing, Songs};
-use crate::player::{Context, PlayerState};
+use crate::player::seam::{self, Trial};
+use crate::player::{Context, PlayerState, Upcoming};
 use crate::state::app;
 
 #[derive(Deserialize, Type)]
@@ -44,6 +45,14 @@ struct Preview {
     from: String,
     to: String,
     context: Context,
+}
+
+#[derive(Deserialize, Type)]
+struct PlaceSeam {
+    from: String,
+    to: String,
+    context: Context,
+    trial: Trial,
 }
 
 #[derive(Deserialize, Type)]
@@ -117,6 +126,18 @@ pub fn register(window: SabineWindow) -> SabineWindow {
         .bridge_typed("player.preview", |request: Preview| {
             with_player(|player| player.preview(app(), &request.from, &request.to, request.context))
         })
+        .bridge_typed(
+            "player.placeSeam",
+            |request: PlaceSeam| -> Result<Option<Upcoming>, BridgeError> {
+                Ok(seam::place(
+                    app(),
+                    &request.from,
+                    &request.to,
+                    request.context,
+                    request.trial,
+                ))
+            },
+        )
         .bridge_typed("player.audition", |request: Audition| {
             with_player(|player| player.audition(app(), &request.song, request.from, request.to))
         })
