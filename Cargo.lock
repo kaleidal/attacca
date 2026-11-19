@@ -456,7 +456,7 @@ dependencies = [
 
 [[package]]
 name = "attacca"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ashpd",
  "attacca-engine",
@@ -471,7 +471,7 @@ dependencies = [
 
 [[package]]
 name = "attacca-analysis"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "attacca-media",
  "ebur128",
@@ -481,7 +481,7 @@ dependencies = [
 
 [[package]]
 name = "attacca-engine"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "attacca-media",
  "crossbeam-channel",
@@ -494,7 +494,7 @@ dependencies = [
 
 [[package]]
 name = "attacca-library"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "attacca-analysis",
  "attacca-media",
@@ -513,7 +513,7 @@ dependencies = [
 
 [[package]]
 name = "attacca-media"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "blake3",
  "symphonia",

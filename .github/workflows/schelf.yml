@@ -8,6 +8,10 @@ on:
         type: choice
         options: [stable, beta, nightly]
         default: stable
+      notes:
+        description: Release notes
+        type: string
+        required: false
 
 permissions:
   contents: write
@@ -37,3 +41,4 @@ jobs:
         with:
           files: dist/**
           channel: ${{ inputs.channel }}
+          notes: ${{ inputs.notes }}
