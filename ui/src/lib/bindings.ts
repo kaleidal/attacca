@@ -76,6 +76,9 @@ export const commands = {
 	playerSeek: (params: {
 		seconds: number,
 	}, options?: CallOptions) => invoke<null>("player.seek", params, options),
+	playerSetRepeat: (params: {
+		repeat: Repeat,
+	}, options?: CallOptions) => invoke<null>("player.setRepeat", params, options),
 	playerState: (options?: CallOptions) => invoke<PlayerState>("player.state", {}, options),
 	playerStopAudition: (options?: CallOptions) => invoke<null>("player.stopAudition", {}, options),
 	playerToggle: (options?: CallOptions) => invoke<null>("player.toggle", {}, options),
@@ -238,7 +241,10 @@ export type Pair = {
 export type PlayerState = {
 	playing: boolean,
 	index: number | null,
+	/**  The queue entry that plays after this one, wrapping around when it repeats. */
+	following: number | null,
 	queue: QueueEntry[],
+	repeat: Repeat,
 	volume: number,
 	upcoming: Upcoming | null,
 	start: number,
@@ -279,6 +285,9 @@ export type QueueEntry = {
 	song: string,
 	context: Context,
 };
+
+/**  What plays once the queue or a song runs out. */
+export type Repeat = "off" | "all" | "one";
 
 export type Rhythm = {
 	tempo: number,

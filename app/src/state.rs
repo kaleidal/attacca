@@ -37,6 +37,7 @@ pub fn start() -> Result<(), String> {
     })
     .map_err(|error| error.to_string())?;
     let sound = settings::load(&library);
+    let repeat = library.setting("repeat").unwrap_or_default();
     let engine = Engine::start(
         sound.output.clone(),
         |event| {
@@ -55,7 +56,7 @@ pub fn start() -> Result<(), String> {
     let app = App {
         library,
         engine,
-        player: Mutex::new(Player::default()),
+        player: Mutex::new(Player::new(repeat)),
         sound: Mutex::new(sound),
         devices: Mutex::new(Vec::new()),
         emitter: OnceLock::new(),

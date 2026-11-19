@@ -13,6 +13,7 @@
   import Button from "../components/ui/Button.svelte";
   import Icon from "../components/ui/Icon.svelte";
   import Slider from "../components/ui/Slider.svelte";
+  import RepeatButton from "../components/shell/RepeatButton.svelte";
   import Empty from "./library/Empty.svelte";
 
   let now = $state(0);
@@ -84,6 +85,7 @@
       {/key}
       <div class="grid w-full max-w-[560px] grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div class="flex items-center justify-end gap-1">
+          <RepeatButton class="size-10 hover:bg-ink-3" />
           <button type="button" aria-label="Edit song" title="Edit song" class="flex size-10 items-center justify-center rounded-full text-paper-3 hover:bg-ink-3 hover:text-paper" onclick={edit}>
             <Icon name="edit" size={19} />
           </button>

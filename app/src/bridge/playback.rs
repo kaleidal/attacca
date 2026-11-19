@@ -4,7 +4,7 @@ use specta::Type;
 
 use super::{Nothing, Songs};
 use crate::player::seam::{self, Trial};
-use crate::player::{Context, PlayerState, Upcoming};
+use crate::player::{Context, PlayerState, Repeat, Upcoming};
 use crate::state::app;
 
 #[derive(Deserialize, Type)]
@@ -45,6 +45,11 @@ struct Preview {
     from: String,
     to: String,
     context: Context,
+}
+
+#[derive(Deserialize, Type)]
+struct SetRepeat {
+    repeat: Repeat,
 }
 
 #[derive(Deserialize, Type)]
@@ -100,6 +105,9 @@ pub fn register(window: SabineWindow) -> SabineWindow {
         })
         .bridge_typed("player.previous", |_: Nothing| {
             with_player(|player| player.previous(app()))
+        })
+        .bridge_typed("player.setRepeat", |request: SetRepeat| {
+            with_player(|player| player.set_repeat(app(), request.repeat))
         })
         .bridge_typed("player.seek", |request: Seek| {
             with_player(|player| player.seek(app(), request.seconds))

@@ -1,12 +1,12 @@
-import { commands, events, type Context, type PlayerState, type Position } from "../bindings";
+import { commands, events, type Context, type PlayerState, type Position, type Repeat } from "../bindings";
 import { library } from "./library.svelte";
 
 class PlayerStore {
-  state = $state<PlayerState>({ playing: false, index: null, queue: [], volume: 0.85, upcoming: null, start: 0, end: null });
+  state = $state<PlayerState>({ playing: false, index: null, following: null, queue: [], repeat: "off", volume: 0.85, upcoming: null, start: 0, end: null });
   position = $state<Position & { at: number }>({ token: 0, seconds: 0, playing: false, crossing: null, at: 0 });
   current = $derived(this.state.index === null ? null : (this.state.queue[this.state.index] ?? null));
   song = $derived(this.current ? (library.byId.get(this.current.song) ?? null) : null);
-  following = $derived(this.state.index === null ? null : (this.state.queue[this.state.index + 1] ?? null));
+  following = $derived(this.state.following === null ? null : (this.state.queue[this.state.following] ?? null));
   nextSong = $derived(this.following ? (library.byId.get(this.following.song) ?? null) : null);
   upNext = $derived(this.state.index === null ? this.state.queue : this.state.queue.slice(this.state.index + 1));
 
@@ -42,6 +42,14 @@ class PlayerStore {
   seek(seconds: number) {
     this.position = { ...this.position, seconds, at: performance.now() };
     return commands.playerSeek({ seconds });
+  }
+
+  /** Turns repeating from off to the whole queue to this song, and back off. */
+  cycleRepeat() {
+    const order: Repeat[] = ["off", "all", "one"];
+    const repeat = order[(order.indexOf(this.state.repeat) + 1) % order.length]!;
+    this.state.repeat = repeat;
+    return commands.playerSetRepeat({ repeat });
   }
 
   volume(volume: number) {

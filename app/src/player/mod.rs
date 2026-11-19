@@ -23,6 +23,16 @@ pub enum Context {
     Queue,
 }
 
+/// What plays once the queue or a song runs out.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub enum Repeat {
+    #[default]
+    Off,
+    All,
+    One,
+}
+
 #[derive(Clone, Debug)]
 pub struct Item {
     pub token: u64,
@@ -53,7 +63,10 @@ pub struct Upcoming {
 pub struct PlayerState {
     pub playing: bool,
     pub index: Option<u32>,
+    /// The queue entry that plays after this one, wrapping around when it repeats.
+    pub following: Option<u32>,
     pub queue: Vec<QueueEntry>,
+    pub repeat: Repeat,
     pub volume: f32,
     pub upcoming: Option<Upcoming>,
     pub start: f64,
@@ -68,9 +81,19 @@ pub struct Player {
     tokens: u64,
     current: Option<TrackPlan>,
     upcoming: Option<Upcoming>,
+    repeat: Repeat,
+    /// The token the playing song comes back under when it repeats.
+    again: Option<u64>,
 }
 
 impl Player {
+    pub fn new(repeat: Repeat) -> Self {
+        Self {
+            repeat,
+            ..Self::default()
+        }
+    }
+
     fn token(&mut self) -> u64 {
         self.tokens += 1;
         self.tokens
@@ -91,6 +114,11 @@ impl Player {
         PlayerState {
             playing: self.playing,
             index: self.index.map(|index| index as u32),
+            following: self
+                .index
+                .and_then(|index| self.following(index))
+                .map(|index| index as u32),
+            repeat: self.repeat,
             queue: self
                 .items
                 .iter()
@@ -119,7 +147,38 @@ impl Player {
     }
 
     pub fn has_next(&self) -> bool {
-        self.index.is_some_and(|index| index + 1 < self.items.len())
+        self.index
+            .is_some_and(|index| self.skip_to(index).is_some())
+    }
+
+    pub fn repeat(&self) -> Repeat {
+        self.repeat
+    }
+
+    pub fn set_repeat(&mut self, app: &App, repeat: Repeat) {
+        self.repeat = repeat;
+        if let Err(error) = app.library.set_setting("repeat", &repeat) {
+            app.fail(error.to_string());
+        }
+        self.recue(app);
+    }
+
+    /// The song that plays by itself after the one at `index`.
+    fn following(&self, index: usize) -> Option<usize> {
+        match self.repeat {
+            Repeat::One => Some(index),
+            Repeat::All => Some((index + 1) % self.items.len()),
+            Repeat::Off => (index + 1 < self.items.len()).then_some(index + 1),
+        }
+    }
+
+    /// The song Next goes to: the following one, back to the start when the queue repeats.
+    fn skip_to(&self, index: usize) -> Option<usize> {
+        if index + 1 < self.items.len() {
+            Some(index + 1)
+        } else {
+            (self.repeat != Repeat::Off).then_some(0)
+        }
     }
 
     pub fn is_playing(&self) -> bool {
@@ -154,24 +213,31 @@ impl Player {
         self.recue(app);
     }
 
-    /// Hands the engine the song after the playing one, and how to reach it.
+    /// Hands the engine the song after the playing one, and how to reach it. A song that repeats
+    /// comes back under a new token, so the engine tells its two plays apart.
     pub fn recue(&mut self, app: &App) {
         self.upcoming = None;
-        let (Some(index), Some(current)) = (self.index, &self.current) else {
+        self.again = None;
+        let Some((index, following)) = self
+            .index
+            .filter(|_| self.current.is_some())
+            .and_then(|index| Some((index, self.following(index)?)))
+        else {
             app.engine.cue(None);
             self.announce(app);
             return;
         };
-        let Some(next) = self.items.get(index + 1) else {
-            app.engine.cue(None);
-            self.announce(app);
-            return;
-        };
+        let mut next = self.items[following].clone();
+        if following == index {
+            next.token = self.token();
+            self.again = Some(next.token);
+        }
         app.library.hurry(&next.song);
         let sound = app.sound.lock().clone();
-        let spec = plans::transition(&app.library, &self.items[index], next);
-        match plans::track(&app.library, &sound, next) {
+        let spec = plans::transition(&app.library, &self.items[index], &next);
+        match plans::track(&app.library, &sound, &next) {
             Some(plan) => {
+                let current = self.current.as_ref().expect("a song is playing");
                 let placed = attacca_engine::place(current, &plan, &spec);
                 self.upcoming = Some(Upcoming {
                     kind: settings::name(placed.kind),
@@ -187,8 +253,8 @@ impl Player {
     }
 
     pub fn next(&mut self, app: &App) {
-        if let Some(index) = self.index.filter(|index| index + 1 < self.items.len()) {
-            self.start(app, index + 1, true);
+        if let Some(index) = self.index.and_then(|index| self.skip_to(index)) {
+            self.start(app, index, true);
         }
     }
 
@@ -196,10 +262,14 @@ impl Player {
         let Some(index) = self.index else { return };
         let position = app.engine.snapshot().seconds;
         let start = self.current.as_ref().map_or(0.0, |current| current.start);
-        if index == 0 || position - start > RESTART_AFTER {
+        if position - start > RESTART_AFTER {
             self.seek(app, start);
-        } else {
+        } else if index > 0 {
             self.start(app, index - 1, true);
+        } else if self.repeat == Repeat::All {
+            self.start(app, self.items.len() - 1, true);
+        } else {
+            self.seek(app, start);
         }
     }
 
@@ -286,6 +356,9 @@ impl Player {
     pub fn on_engine(&mut self, app: &App, event: &EngineEvent) {
         match event {
             EngineEvent::Crossing { to, .. } => {
+                if let (Some(index), true) = (self.index, self.again == Some(*to)) {
+                    self.items[index].token = *to;
+                }
                 if let Some(index) = self.items.iter().position(|item| item.token == *to) {
                     let sound = app.sound.lock().clone();
                     self.index = Some(index);
@@ -329,9 +402,8 @@ impl Player {
             }
             self.recue(app);
         } else if self
-            .items
-            .get(index + 1)
-            .is_some_and(|next| next.song == song)
+            .following(index)
+            .is_some_and(|next| self.items[next].song == song)
         {
             self.recue(app);
         }

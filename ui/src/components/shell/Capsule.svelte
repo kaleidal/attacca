@@ -7,6 +7,7 @@
   import { ui } from "../../lib/stores/ui.svelte";
   import Cover from "../media/Cover.svelte";
   import Icon from "../ui/Icon.svelte";
+  import RepeatButton from "./RepeatButton.svelte";
 
   let bar = $state<HTMLDivElement>();
 
@@ -53,6 +54,7 @@
         <Icon name="next" size={17} />
       </button>
     </div>
+    <RepeatButton size={17} class="size-9 hover:bg-ink-4" />
     <button type="button" aria-label="Queue" class="flex size-9 items-center justify-center rounded-full hover:bg-ink-4 {ui.queueOpen ? 'text-accent' : 'text-paper-2'}" onclick={() => (ui.queueOpen = !ui.queueOpen)}>
       <Icon name="queue" size={17} />
     </button>

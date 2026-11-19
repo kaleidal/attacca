@@ -7,7 +7,7 @@ use mpris_server::{
 };
 use parking_lot::Mutex;
 
-use crate::player::PlayerState;
+use crate::player::{PlayerState, Repeat};
 use crate::settings::Names;
 use crate::state::app;
 
@@ -15,7 +15,16 @@ use crate::state::app;
 pub struct Controls;
 
 static SERVER: OnceLock<Server<Controls>> = OnceLock::new();
-static LAST: Mutex<Option<(bool, Option<String>, bool)>> = Mutex::new(None);
+/// What the media controls last heard, so unchanged states aren't sent again.
+#[derive(PartialEq)]
+struct Told {
+    playing: bool,
+    song: Option<String>,
+    has_next: bool,
+    repeat: Repeat,
+}
+
+static LAST: Mutex<Option<Told>> = Mutex::new(None);
 
 pub fn start() {
     sabine::async_runtime().spawn(async {
@@ -65,6 +74,14 @@ fn metadata() -> Metadata {
     metadata
 }
 
+fn loop_status(repeat: Repeat) -> LoopStatus {
+    match repeat {
+        Repeat::Off => LoopStatus::None,
+        Repeat::All => LoopStatus::Playlist,
+        Repeat::One => LoopStatus::Track,
+    }
+}
+
 /// Tells the system's media controls what changed.
 pub fn update(state: &PlayerState) {
     let Some(server) = SERVER.get() else { return };
@@ -72,16 +89,20 @@ pub fn update(state: &PlayerState) {
         .index
         .and_then(|index| state.queue.get(index as usize))
         .map(|entry| entry.song.clone());
-    let has_next = state
-        .index
-        .is_some_and(|index| (index as usize) + 1 < state.queue.len());
-    let key = (state.playing, song, has_next);
+    let has_next = state.following.is_some();
+    let repeat = state.repeat;
+    let told = Told {
+        playing: state.playing,
+        song,
+        has_next,
+        repeat,
+    };
     let mut last = LAST.lock();
-    if last.as_ref() == Some(&key) {
+    if last.as_ref() == Some(&told) {
         return;
     }
-    let song_changed = last.as_ref().is_none_or(|last| last.1 != key.1);
-    *last = Some(key);
+    let song_changed = last.as_ref().is_none_or(|last| last.song != told.song);
+    *last = Some(told);
     drop(last);
     let status = if state.playing {
         PlaybackStatus::Playing
@@ -92,6 +113,7 @@ pub fn update(state: &PlayerState) {
         let mut properties = vec![
             Property::PlaybackStatus(status),
             Property::CanGoNext(has_next),
+            Property::LoopStatus(loop_status(repeat)),
         ];
         if song_changed {
             properties.push(Property::Metadata(metadata()));
@@ -221,10 +243,16 @@ impl PlayerInterface for Controls {
     }
 
     async fn loop_status(&self) -> fdo::Result<LoopStatus> {
-        Ok(LoopStatus::None)
+        Ok(loop_status(app().player.lock().repeat()))
     }
 
-    async fn set_loop_status(&self, _loop_status: LoopStatus) -> Result<()> {
+    async fn set_loop_status(&self, loop_status: LoopStatus) -> Result<()> {
+        let repeat = match loop_status {
+            LoopStatus::None => Repeat::Off,
+            LoopStatus::Playlist => Repeat::All,
+            LoopStatus::Track => Repeat::One,
+        };
+        app().player.lock().set_repeat(app(), repeat);
         Ok(())
     }
 

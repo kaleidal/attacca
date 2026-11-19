@@ -2,7 +2,7 @@
 
 A music player for files you own, built around one idea: you decide how each song ends and how the next one begins.
 
-- Plays a local library of songs, albums, artists, folders and playlists, with a queue. Songs go by the titles in their tags or by their file names.
+- Plays a local library of songs, albums, artists, folders and playlists, with a queue that can repeat as a whole or one song at a time. Songs go by the titles in their tags or by their file names.
 - Sets where each song starts and ends without touching the file.
 - Moves between songs with one of six transitions: fade, rise, blend, wave, melt and slam. Albums play gapless.
 - Shows each transition as the end of one song over the start of the next, where you drag where it starts, how long it lasts and where the next song comes in.
