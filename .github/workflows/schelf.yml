@@ -16,9 +16,9 @@ permissions:
 
 jobs:
   build:
-    uses: Lantharos/Sabine/.github/workflows/release-app.yml@v0.95
+    uses: Lantharos/Sabine/.github/workflows/release-app.yml@v0.97
     with:
-      sabine_version: v0.95
+      sabine_version: v0.97
       rust_toolchain: "1.99"
       platforms: linux-x86_64 linux-aarch64
       linux_packages: libpipewire-0.3-dev clang

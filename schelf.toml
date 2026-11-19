@@ -9,7 +9,7 @@ repository = "kaleidal/attacca"
 platforms = ["linux-x86_64", "linux-aarch64"]
 
 [requires]
-sabine = "0.95"
+sabine = "0.97"
 
 [privacy]
 telemetry = "none"

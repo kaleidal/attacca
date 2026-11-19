@@ -1793,12 +1793,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6dbf3de79e51f3d586ab4cb9d5c3e2c14aa28ed23d180cf89b4df0454a69cc87"
 
 [[package]]
-name = "humantime"
-version = "2.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15cdd26707701c53297e2fa6afb323d55fbc1d0810c3aec078ae3ef0424c3c15"
-
-[[package]]
 name = "hybrid-array"
 version = "0.4.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1999,6 +1993,41 @@ name = "itoa"
 version = "1.0.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3bd1574e617a9a6c1f8f8181bd7e841e1f20e4277607ef28945765188d6284d4"
+
+[[package]]
+name = "jiff"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed5d126d72eb017f10b302e73bdeca446bea405ee449af4d9e7866d6b082d83e"
+dependencies = [
+ "jiff-core",
+ "jiff-static",
+ "log",
+ "portable-atomic",
+ "portable-atomic-util",
+ "serde_core",
+]
+
+[[package]]
+name = "jiff-core"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6b46a105a9874634dd96231021526bf24ca04955a5998c59a9c7666e634b7b8"
+dependencies = [
+ "log",
+]
+
+[[package]]
+name = "jiff-static"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c0127e9bde3c6130d6169e7d8d68676e4be69c4bf7573c308b6f960a5089c428"
+dependencies = [
+ "jiff-core",
+ "proc-macro2",
+ "quote",
+ "syn 3.0.10",
+]
 
 [[package]]
 name = "jni"
@@ -3724,8 +3753,8 @@ dependencies = [
 
 [[package]]
 name = "sabine"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "accesskit",
  "accesskit_macos",
@@ -3743,8 +3772,8 @@ dependencies = [
  "global-hotkey",
  "glow",
  "glyphon",
- "humantime",
  "image",
+ "jiff",
  "khronos-egl",
  "landlock",
  "libc",
@@ -3795,8 +3824,8 @@ dependencies = [
 
 [[package]]
 name = "sabine-bridge"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "serde",
  "serde_json",
@@ -3807,8 +3836,8 @@ dependencies = [
 
 [[package]]
 name = "sabine-dialog"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "bytemuck",
  "glyphon",
@@ -3823,8 +3852,8 @@ dependencies = [
 
 [[package]]
 name = "sabine-host"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "sabine-bridge",
  "sabine-runtime",
@@ -3835,8 +3864,8 @@ dependencies = [
 
 [[package]]
 name = "sabine-platform"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "block2 0.6.2",
  "dispatch2",
@@ -3866,8 +3895,8 @@ dependencies = [
 
 [[package]]
 name = "sabine-runtime"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "bzip2",
  "flate2",
@@ -3885,8 +3914,8 @@ dependencies = [
 
 [[package]]
 name = "sabine-service"
-version = "0.95.0"
-source = "git+https://github.com/Lantharos/Sabine?tag=v0.95#a00540933fd7db3905fc01004e449a80a6576c22"
+version = "0.97.0"
+source = "git+https://github.com/Lantharos/Sabine?tag=v0.97#6a5a3f6c92d6e89b1486069d3e84b86844436e08"
 dependencies = [
  "base64",
  "clap",
@@ -3894,7 +3923,7 @@ dependencies = [
  "ed25519-dalek",
  "embed-resource",
  "getrandom 0.4.3",
- "humantime",
+ "jiff",
  "libc",
  "sabine-dialog",
  "sabine-host",
@@ -6344,9 +6373,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "9.6.0"
+version = "9.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80cc68510ea7553c30a69c732de5278e94183f68765af6c642dbccefd6ec777e"
+checksum = "63e50f7b2212e4635244be3c363b53273d159f2523eb7db3096c1d2861c1b603"
 dependencies = [
  "bzip2",
  "constant_time_eq 0.6.1",
